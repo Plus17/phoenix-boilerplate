@@ -29,6 +29,6 @@ npm-debug.log
 /src/.elixir_ls/
 
 # Ignore assets that are produced by build tools.
-/src/priv/static/assets
+/src/priv/static/
 
 .env
