@@ -14,7 +14,7 @@ config :app_name, AppName.Repo,
 config :app_name, AppNameWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: System.fetch_env!("HTTP_PORT")],
+  http: [ip: {0, 0, 0, 0}, port: System.fetch_env!("HTTP_PORT")],
   url: [host: System.fetch_env!("PHX_URL_HOST")],
   secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
   check_origin: false,
@@ -22,7 +22,8 @@ config :app_name, AppNameWeb.Endpoint,
   debug_errors: true,
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
