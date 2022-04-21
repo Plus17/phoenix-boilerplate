@@ -27,3 +27,5 @@ npm-debug.log
 /src/assets/node_modules/
 
 /src/.elixir_ls/
+
+.env
