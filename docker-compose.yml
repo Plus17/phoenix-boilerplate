@@ -1,0 +1,35 @@
+version: '3.7'
+
+volumes:
+  deps:
+  builds:
+  node_modules:
+
+services:
+  phx:
+    image: plus17/phoenix-alpine:1.13.4-1.6.6
+    ports:
+      - ${HTTP_PORT:-4000}:${HTTP_PORT:-4000}
+    volumes:
+      - ./src:/app/src
+      - deps:/app/src/deps
+      - builds:/app/src/_build
+      - node_modules:/app/src/assets/node_modules
+    depends_on:
+      - postgres
+    environment:
+      - MIX_ENV=${ENV:-dev}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - PHX_URL_HOST=${PHX_URL_HOST}
+      - HTTP_PORT=${HTTP_PORT:-4000}
+    env_file:
+      - .env
+    working_dir: /app/src
+
+  postgres:
+    image: postgres:11
+    ports:
+      - ${DATABASE_EXTERNAL_PORT:-5432}:5432
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "trust"
