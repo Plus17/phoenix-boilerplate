@@ -10,7 +10,8 @@ defmodule AppName.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      elixirc_options: [warnings_as_errors: true]
     ]
   end
 
@@ -67,7 +68,7 @@ defmodule AppName.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test --warnings-as-errors"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
