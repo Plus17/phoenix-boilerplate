@@ -28,3 +28,8 @@ config :logger, level: :warn
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Only in tests, remove the complexity from the password hashing algorithm
+config :argon2_elixir,
+  t_cost: 1,
+  m_cost: 8
