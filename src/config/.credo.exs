@@ -107,14 +107,15 @@
         {Credo.Check.Readability.LargeNumbers, []},
         {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
         {Credo.Check.Readability.ModuleAttributeNames, []},
-        {Credo.Check.Readability.ModuleDoc, [
-          files: %{
-            excluded: [
-              "lib/app_name_web/controllers/user_auth.ex",
-              "lib/app_name/contexts/users/user_notifier.ex"
-            ]
-          }
-        ]},
+        {Credo.Check.Readability.ModuleDoc,
+         [
+           files: %{
+             excluded: [
+               "lib/app_name_web/controllers/user_auth.ex",
+               "lib/app_name/contexts/users/user_notifier.ex"
+             ]
+           }
+         ]},
         {Credo.Check.Readability.ModuleNames, []},
         {Credo.Check.Readability.ParenthesesInCondition, []},
         {Credo.Check.Readability.ParenthesesOnZeroArityDefs, false},
@@ -174,13 +175,14 @@
         # Controversial and experimental checks (opt-in, just replace `false` with `[]`)
         #
         {Credo.Check.Consistency.MultiAliasImportRequireUse, []},
-        {Credo.Check.Consistency.UnusedVariableNames, [
-          files: %{
-            excluded: [
-              "lib/app_name/contexts/users.ex",
-            ]
-          }
-        ]},
+        {Credo.Check.Consistency.UnusedVariableNames,
+         [
+           files: %{
+             excluded: [
+               "lib/app_name/contexts/users.ex"
+             ]
+           }
+         ]},
         {Credo.Check.Design.DuplicatedCode, false},
         {Credo.Check.Readability.AliasAs, []},
         {Credo.Check.Readability.BlockPipe, []},
@@ -218,30 +220,32 @@
         {Credo.Check.Refactor.AppendSingleItem, []},
         {Credo.Check.Refactor.DoubleBooleanNegation, []},
         {Credo.Check.Refactor.ModuleDependencies, false},
-        {Credo.Check.Refactor.NegatedIsNil, [
-          files: %{
-            excluded: [
-              # exclude mix phx.gen.auth generated files
-              "lib/app_name_web/controllers/user_confirmation_controller.ex"
-            ]
-          }
-        ]},
+        {Credo.Check.Refactor.NegatedIsNil,
+         [
+           files: %{
+             excluded: [
+               # exclude mix phx.gen.auth generated files
+               "lib/app_name_web/controllers/user_confirmation_controller.ex"
+             ]
+           }
+         ]},
         {Credo.Check.Refactor.PipeChainStart, false},
-        {Credo.Check.Refactor.VariableRebinding, [
-          allow_bang: true,
-          files: %{
-            excluded: [
-              # exclude mix phx.gen.auth generated files
-              "test/app_name/contexts/users_test.exs",
-              "test/app_name_web/controllers/user_settings_controller_test.exs",
-              "test/app_name_web/controllers/user_session_controller_test.exs",
-              "test/app_name_web/controllers/user_registration_controller_test.exs",
-              "test/app_name_web/controllers/user_confirmation_controller_test.exs",
-              "test/app_name_web/controllers/user_auth_test.exs",
-              "lib/app_name_web/controllers/user_confirmation_controller.ex"
-            ]
-          }
-        ]},
+        {Credo.Check.Refactor.VariableRebinding,
+         [
+           allow_bang: true,
+           files: %{
+             excluded: [
+               # exclude mix phx.gen.auth generated files
+               "test/app_name/contexts/users_test.exs",
+               "test/app_name_web/controllers/user_settings_controller_test.exs",
+               "test/app_name_web/controllers/user_session_controller_test.exs",
+               "test/app_name_web/controllers/user_registration_controller_test.exs",
+               "test/app_name_web/controllers/user_confirmation_controller_test.exs",
+               "test/app_name_web/controllers/user_auth_test.exs",
+               "lib/app_name_web/controllers/user_confirmation_controller.ex"
+             ]
+           }
+         ]},
         {Credo.Check.Warning.LeakyEnvironment, false},
         {Credo.Check.Warning.MapGetUnsafePass, false},
         {Credo.Check.Warning.UnsafeToAtom, []}
