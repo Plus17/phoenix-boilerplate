@@ -64,7 +64,10 @@ defmodule AppName.MixProject do
 
       # Code quality
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.14", only: :test}
+      {:excoveralls, "~> 0.14", only: :test},
+
+      # Testing
+      {:ex_machina, "~> 2.7.0", only: :test}
     ]
   end
 
