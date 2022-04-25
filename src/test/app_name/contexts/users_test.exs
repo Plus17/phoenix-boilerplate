@@ -102,6 +102,7 @@ defmodule AppName.Contexts.UsersTest do
     test "allows fields to be set" do
       password = valid_user_password()
       user_params = params_for(:user, password: password)
+
       changeset =
         Users.change_user_registration(
           %User{},
