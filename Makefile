@@ -62,10 +62,10 @@ test.failed:
 	docker-compose run --rm phx sh -c "mix test --failed"
 
 credo:
-	docker-compose run --rm phx sh -c "mix credo --strict"
+	docker-compose run --rm --no-deps phx sh -c "mix credo --strict"
 
 coverage:
-	docker-compose run --rm phx sh -c "mix coveralls.html"
+	docker-compose run --rm phx sh -c "MIX_ENV=test mix coveralls.html"
 
 gettext:
 	docker-compose run --rm phx sh -c "mix gettext.extract --merge"
