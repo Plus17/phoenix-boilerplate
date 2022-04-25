@@ -1,9 +1,10 @@
 defmodule AppNameWeb.UserAuthTest do
   use AppNameWeb.ConnCase, async: true
 
+  import AppName.Contexts.UsersFixtures
+
   alias AppName.Contexts.Users
   alias AppNameWeb.UserAuth
-  import AppName.Contexts.UsersFixtures
 
   @remember_me_cookie "_app_name_web_user_remember_me"
 
@@ -106,7 +107,7 @@ defmodule AppNameWeb.UserAuthTest do
     end
 
     test "does not authenticate if data is missing", %{conn: conn, user: user} do
-      _ = Users.generate_user_session_token(user)
+      _user_token = Users.generate_user_session_token(user)
       conn = UserAuth.fetch_current_user(conn, [])
       refute get_session(conn, :user_token)
       refute conn.assigns.current_user

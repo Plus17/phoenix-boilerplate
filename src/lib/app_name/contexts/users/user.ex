@@ -1,4 +1,7 @@
 defmodule AppName.Contexts.Users.User do
+  @moduledoc """
+  User schema
+  """
 
   use Ecto.Schema
   import Ecto.Changeset
@@ -78,10 +81,12 @@ defmodule AppName.Contexts.Users.User do
   It requires the email to change otherwise an error is added.
   """
   def email_changeset(user, attrs) do
-    user
-    |> cast(attrs, [:email])
-    |> validate_email()
-    |> case do
+    changeset =
+      user
+      |> cast(attrs, [:email])
+      |> validate_email()
+
+    case changeset do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
     end
@@ -110,7 +115,7 @@ defmodule AppName.Contexts.Users.User do
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = NaiveDateTime.utc_now(NaiveDateTime.truncate(:second))
     change(user, confirmed_at: now)
   end
 
@@ -125,7 +130,7 @@ defmodule AppName.Contexts.Users.User do
     Argon2.verify_pass(password, hashed_password)
   end
 
-  def valid_password?(_, _) do
+  def valid_password?(_user, _password) do
     Argon2.no_user_verify()
     false
   end

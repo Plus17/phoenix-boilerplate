@@ -1,8 +1,11 @@
 defmodule AppNameWeb.PageLive do
+  @moduledoc """
+  Index page
+  """
   use AppNameWeb, :live_view
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_param, _session, socket) do
     {:ok, assign(socket, query: "", results: %{})}
   end
 
@@ -17,7 +20,7 @@ defmodule AppNameWeb.PageLive do
       %{^query => vsn} ->
         {:noreply, redirect(socket, external: "https://hexdocs.pm/#{query}/#{vsn}")}
 
-      _ ->
+      _no_match ->
         {:noreply,
          socket
          |> put_flash(:error, "No dependencies found matching \"#{query}\"")

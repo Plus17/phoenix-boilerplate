@@ -6,7 +6,9 @@ defmodule AppName.Contexts.Users do
   import Ecto.Query, warn: false
   alias AppName.Repo
 
-  alias AppName.Contexts.Users.{User, UserToken, UserNotifier}
+  alias AppName.Contexts.Users.User
+  alias AppName.Contexts.Users.UserNotifier
+  alias AppName.Contexts.Users.UserToken
 
   ## Database getters
 
@@ -205,13 +207,15 @@ defmodule AppName.Contexts.Users do
       |> User.password_changeset(attrs)
       |> User.validate_current_password(password)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
-    |> Repo.transaction()
-    |> case do
+    transaction_result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:user, changeset)
+      |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+      |> Repo.transaction()
+
+    case transaction_result do
       {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
+      {:error, :user, changeset, _any} -> {:error, changeset}
     end
   end
 
@@ -341,11 +345,13 @@ defmodule AppName.Contexts.Users do
 
   """
   def reset_user_password(user, attrs) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
-    |> Repo.transaction()
-    |> case do
+    transaction_result =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
+      |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+      |> Repo.transaction()
+
+    case transaction_result do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end

@@ -1,10 +1,11 @@
 defmodule AppName.Contexts.UsersTest do
   use AppName.DataCase
 
-  alias AppName.Contexts.Users
-
   import AppName.Contexts.UsersFixtures
-  alias AppName.Contexts.Users.{User, UserToken}
+
+  alias AppName.Contexts.Users
+  alias AppName.Contexts.Users.User
+  alias AppName.Contexts.Users.UserToken
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -299,7 +300,7 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Users.generate_user_session_token(user)
+      _user_token = Users.generate_user_session_token(user)
 
       {:ok, _} =
         Users.update_user_password(user, valid_user_password(), %{
@@ -494,7 +495,7 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _ = Users.generate_user_session_token(user)
+      _user_token = Users.generate_user_session_token(user)
       {:ok, _} = Users.reset_user_password(user, %{password: "new valid password"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end

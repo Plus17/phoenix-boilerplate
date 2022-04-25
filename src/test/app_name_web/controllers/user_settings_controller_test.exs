@@ -1,8 +1,9 @@
 defmodule AppNameWeb.UserSettingsControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  alias AppName.Contexts.Users
   import AppName.Contexts.UsersFixtures
+
+  alias AppName.Contexts.Users
 
   setup :register_and_log_in_user
 

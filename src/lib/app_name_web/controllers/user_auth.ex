@@ -3,6 +3,7 @@ defmodule AppNameWeb.UserAuth do
   import Phoenix.Controller
 
   alias AppName.Contexts.Users
+  # credo:disable-for-next-line
   alias AppNameWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
