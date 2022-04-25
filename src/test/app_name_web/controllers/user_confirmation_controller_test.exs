@@ -1,13 +1,11 @@
 defmodule AppNameWeb.UserConfirmationControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  import AppName.Contexts.UsersFixtures
-
   alias AppName.Contexts.Users
   alias AppName.Repo
 
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "GET /users/confirm" do

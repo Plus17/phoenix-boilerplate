@@ -22,6 +22,7 @@ defmodule AppNameWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
+      import AppName.Factory
       import AppNameWeb.ConnCase
 
       alias AppNameWeb.Router.Helpers, as: Routes
@@ -46,7 +47,7 @@ defmodule AppNameWeb.ConnCase do
   test context.
   """
   def register_and_log_in_user(%{conn: conn}) do
-    user = AppName.Contexts.UsersFixtures.user_fixture()
+    user = AppName.Factory.insert(:user)
     %{conn: log_in_user(conn, user), user: user}
   end
 
@@ -61,5 +62,11 @@ defmodule AppNameWeb.ConnCase do
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
+  end
+
+  def extract_user_token(fun) do
+    {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
+    [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
+    token
   end
 end

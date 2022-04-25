@@ -1,10 +1,8 @@
 defmodule AppNameWeb.UserSessionControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  import AppName.Contexts.UsersFixtures
-
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "GET /users/log_in" do

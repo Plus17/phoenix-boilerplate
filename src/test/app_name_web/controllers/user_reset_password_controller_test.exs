@@ -1,13 +1,11 @@
 defmodule AppNameWeb.UserResetPasswordControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  import AppName.Contexts.UsersFixtures
-
   alias AppName.Contexts.Users
   alias AppName.Repo
 
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "GET /users/reset_password" do
