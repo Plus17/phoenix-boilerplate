@@ -67,7 +67,10 @@ defmodule AppName.MixProject do
       {:excoveralls, "~> 0.14", only: :test},
 
       # Testing
-      {:ex_machina, "~> 2.7.0", only: :test}
+      {:ex_machina, "~> 2.7.0", only: :test},
+
+      # Other ...
+      {:cors_plug, "~> 3.0"}
     ]
   end
 
