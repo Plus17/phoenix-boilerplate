@@ -25,8 +25,9 @@ Here is an opinionated list of othe usefuel library's to consider:
 | Authentication              | [`ueberauth`](https://github.com/ueberauth/ueberauth)                                  |
 | Emails                      | [`bamboo`](https://github.com/thoughtbot/bamboo), [`swoosh`](https://github.com/swoosh/swoosh) |
 | HTTP client                 | [`Tesla`](https://github.com/teamon/tesla)                                   |
-| Pagination                  | [`scrivener`](https://github.com/drewolson/scrivener)                                  |
-| Mocks                       | [`mox`](https://github.com/jjh42/mock), [`mimic`](https://github.com/edgurgel/mimic)   |
+| Job processing              | ['Oban'](https://github.com/sorentwo/oban)
+| Pagination                  | [`Scrivener`](https://github.com/drewolson/scrivener)                                  |
+| Mocks                       | [`Mox`](https://github.com/dashbitco/mox), [`Mimic`](https://github.com/edgurgel/mimic)   |
 
 
 # AppName
