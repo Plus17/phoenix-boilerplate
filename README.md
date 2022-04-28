@@ -8,7 +8,6 @@ This boilerplate comes with batteries included, you’ll find:
 - Tests factories using [ExMachina](https://github.com/thoughtbot/ex_machina) and code coverage using [ExCoveralls](https://github.com/parroty/excoveralls)
 - CORS management with [CorsPlug](https://github.com/mschae/cors_plug)
 - Static code analysis with [Credo](https://github.com/rrrene/credo)
-- Healthcheck setup with [plug_checkup](https://github.com/ggpasqualino/plug_checkup)
 - Releases using [`mix release`](https://hexdocs.pm/mix/Mix.Tasks.Release.html) and [Docker](https://www.docker.com)
 
 

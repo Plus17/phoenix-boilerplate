@@ -88,4 +88,8 @@ defmodule AppNameWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
   end
+
+  scope "/health", log: false do
+    forward "/", AppNameWeb.Plugs.HealthCheck
+  end
 end
