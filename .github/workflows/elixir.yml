@@ -12,7 +12,19 @@ env:
 jobs:
   build:
     name: Build and test
+    strategy:
+      matrix:
+        elixir: ["1.12", "1.13"]
+        otp: ["24"]
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: app_name_test
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
 
     steps:
     - uses: actions/checkout@v2
