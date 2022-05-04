@@ -2,7 +2,7 @@ import Config
 
 # Configure your database
 config :app_name, AppName.Repo,
-  url: System.fetch_env!("POSTGRES_URL"),
+  url: System.fetch_env!("DATABASE_URL"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

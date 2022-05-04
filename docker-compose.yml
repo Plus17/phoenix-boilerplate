@@ -20,7 +20,7 @@ services:
     environment:
       - MIX_ENV=${ENV:-dev}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
-      - POSTGRES_URL=${POSTGRES_URL}
+      - DATABASE_URL=${DATABASE_URL}
       - PHX_URL_HOST=${PHX_URL_HOST}
       - HTTP_PORT=${HTTP_PORT:-4000}
     env_file:
