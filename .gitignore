@@ -1,11 +1,11 @@
 # The directory Mix will write compiled artifacts to.
-/src/_build/
+/_build/
 
 # If you run "mix test --cover", coverage assets end up here.
-/src/cover/
+/cover/
 
 # The directory Mix downloads your dependencies sources to.
-/src/deps/
+/deps/
 
 # Where 3rd-party dependencies like ExDoc output generated docs.
 /doc/
@@ -20,15 +20,21 @@ erl_crash.dump
 *.ez
 *.beam
 
+# Ignore package tarball (built via "mix hex.build").
+app_name-*.tar
+
+# The directory NPM downloads your dependencies sources to.
+/assets/node_modules/
+
 # If NPM crashes, it generates a log, let's ignore it too.
 npm-debug.log
 
-# The directory NPM downloads your dependencies sources to.
-/src/assets/node_modules/
-
-/src/.elixir_ls/
+/.elixir_ls/
 
 # Ignore assets that are produced by build tools.
-/src/priv/static/
+/priv/static/assets/
+
+# Ignore digested assets cache.
+/priv/static/cache_manifest.json
 
 .env

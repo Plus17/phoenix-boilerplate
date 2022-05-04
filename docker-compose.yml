@@ -11,7 +11,7 @@ services:
     ports:
       - ${HTTP_PORT:-4000}:${HTTP_PORT:-4000}
     volumes:
-      - ./src:/app/src
+      - ./:/app/src
       - deps:/app/src/deps
       - builds:/app/src/_build
       - node_modules:/app/src/assets/node_modules
