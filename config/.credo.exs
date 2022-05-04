@@ -179,7 +179,8 @@
          [
            files: %{
              excluded: [
-               "lib/app_name/contexts/users.ex"
+               "lib/app_name/contexts/users.ex",
+               "lib/release.ex"
              ]
            }
          ]},
@@ -200,7 +201,8 @@
                "lib/app_name/contexts/users/user.ex",
                "lib/app_name/contexts/users/user_notifier.ex",
                "lib/app_name/contexts/users.ex",
-               "lib/app_name/contexts/users/user_token.ex"
+               "lib/app_name/contexts/users/user_token.ex",
+               "lib/release.ex"
              ]
            }
          ]},

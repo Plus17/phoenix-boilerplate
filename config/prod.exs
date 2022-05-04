@@ -10,7 +10,12 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :app_name, AppNameWeb.Endpoint,
-  url: [host: System.fetch_env!("PHX_URL_HOST"), port: 80],
+  url: [port: 4000],
+  server: true,
+  debug_errors: false,
+  code_reloader: false,
+  check_origin: false,
+  compress: true,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
