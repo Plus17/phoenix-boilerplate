@@ -29,6 +29,29 @@ Here is an opinionated list of othe usefuel library's to consider:
 | Mocks                       | [`Mox`](https://github.com/dashbitco/mox), [`Mimic`](https://github.com/edgurgel/mimic)   |
 
 
+## Development with Docker
+
+### Makefile
+
+For convenience, you can use the commands included in the Makefile:
+
+| Command                                                           | Description                                           |
+| ----------------------------------------------------------------- | ----------------------------------------------------- |
+| `make bootstrap`                                                  | Bootstrap the phoenix project (dependencies & databse)|
+| `make deps.get`                                                   | Gets & compile dependencies                           |
+| `make deps.clean`                                                 | Clean unused dependencies & remove from mix.lock      |
+| `make seeds`                                                      | Run seeds                                             |
+| `make reset`                                                      | Resets the project removing deps & builds             |
+| `make ecto.setup`                                                 | Setup the database for dev                            |
+| `make ecto.reset`                                                 | Resets the database for dev                           |
+| `make ecto.reset.test`                                            | Resets the database for test                          |
+| `make test`                                                       | Runs tests                                            |
+| `make check.all`                                                  | Run all CI verifications (formatter, credo, coverage) |
+| `make run`                                                        | Start **Phoenix** server                              |
+| `make gettext`                                                    | Search & merge new translations                       |
+| `make format`                                                     | Format all phoenix files                              |
+
+
 # AppName
 
 To start your Phoenix server:
