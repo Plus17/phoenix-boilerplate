@@ -1,5 +1,7 @@
 include .env
 
+default: run
+
 #### Bootstrap Commands
 
 bootstrap: deps.get ecto.setup npm.install
@@ -72,3 +74,5 @@ gettext:
 
 check.formatter:
 	docker-compose run --rm --no-deps phx sh -c "mix format --check-formatted"
+
+.PHONY: test
