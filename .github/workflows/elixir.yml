@@ -13,7 +13,7 @@ jobs:
   build:
     env:
       MIX_ENV: test
-      DATABASE_URL: ecto://postgres:postgres@localhost/app_name_test
+      TEST_DATABASE_URL: ecto://postgres:postgres@localhost/app_name_test
     name: Build and test
     strategy:
       matrix:
