@@ -27,10 +27,28 @@ Here is an opinionated list of othe usefuel library's to consider:
 | Job processing              | ['Oban'](https://github.com/sorentwo/oban)
 | Pagination                  | [`Scrivener`](https://github.com/drewolson/scrivener)                                  |
 | Mocks                       | [`Mox`](https://github.com/dashbitco/mox), [`Mimic`](https://github.com/edgurgel/mimic)   |
-
-
 ## Development with Docker
 
+### Dependencies
+
+1. Install [Docker](https://www.docker.com/products/docker-desktop)
+2. Install Make: `sudo apt install make` or `brew install make`
+
+### First run
+
+1. Clone the project repository: `git clone git clone git@github.com:Plus17/phoenix-boilerplate.git`
+2. Go to project dir: `cd phoenix-boilerplate`
+3. Execute: `make bootstrap` to install dependencies, setup the database, execute migrations, etc.
+4. Get a `.env` file executing `cp env.template .env` and set the `SECRET_KEY_BASE` value. Get a new value executing `make gen.secret`
+5. Execute: `make run` to run the server at http://localhost:4000
+### New environment variables
+
+If you want to add new environment variables you need to put the new env var in some places:
+
+1. In the `.env.dist` template file to include in new installations
+2. In your `.env` file
+
+NOTE: When you add a new env var you must restart the container, so the container can read the new variable.
 ### Makefile
 
 For convenience, you can use the commands included in the Makefile:
@@ -51,7 +69,32 @@ For convenience, you can use the commands included in the Makefile:
 | `make gettext`                                                    | Search & merge new translations                       |
 | `make format`                                                     | Format all phoenix files                              |
 
+## Development without Docker
 
+### Dependencies
+
+1. Install [asdf](https://asdf-vm.com/guide/getting-started.html#_1-install-dependencies)
+2. Add the [asdf erlang plugin](https://github.com/asdf-vm/asdf-erlang) `asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git`
+3. Add the [asdf elixir plugin](https://github.com/asdf-vm/asdf-elixir) `asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git`
+4. Add the [asdf nodejs plugin](https://github.com/asdf-vm/asdf-nodejs) `asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git`
+### First run
+
+1. Clone the project repository: `git clone git@github.com:Plus17/phoenix-boilerplate.git`
+2. Enter to project dir: `cd phoenix-boilerplate`
+3. Install Erlang, Elixir & NodeJS using the `.tools-versions` file with: `asdf install`
+4. Copy the `env.dist` file to `.env` and set the `SECRET_KEY_BASE` value. Get a new value executing `mix phx.gen.secret`.
+5. Run `source .env` on project root folder
+8. Run `mix local.hex && mix local.rebar`
+9. Run `mix deps.get && mix deps.compile `
+10. Run `mix ecto.setup`
+11. Run `mix phx.server`
+
+### New environment variables
+
+If you want to add new environment variables you need to put the new env var in some places:
+
+1. In the `.env.dist` template file to include in new installations
+2. In your `.env` file.
 # AppName
 
 To start your Phoenix server:
