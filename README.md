@@ -41,7 +41,7 @@ Here is an opinionated list of other useful libraries to consider:
 
 ### First run
 
-1. Clone the project repository: `git clone git clone git@github.com:Plus17/phoenix-boilerplate.git`
+1. Clone the project repository: `git clone git@github.com:Plus17/phoenix-boilerplate.git`
 2. Go to project dir: `cd phoenix-boilerplate`
 3. Execute: `make bootstrap` to install dependencies, setup the database, execute migrations, etc.
 4. Get a `.env` file executing `cp env.template .env` and set the `SECRET_KEY_BASE` value. Get a new value executing `make gen.secret`
