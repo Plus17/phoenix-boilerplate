@@ -17,16 +17,21 @@ This boilerplate comes with batteries included, you’ll find:
 
 ## Useful libraries
 
-Here is an opinionated list of othe usefuel library's to consider:
+Here is an opinionated list of other useful libraries to consider:
 
 | Category                    | Libraries                                                                              |
 | --------------------------- | -------------------------------------------------------------------------------------- |
 | Authentication              | [`ueberauth`](https://github.com/ueberauth/ueberauth)                                  |
+| Token based auth            | [`Guardian`](https://github.com/ueberauth/guardian)                                    |
 | Emails                      | [`bamboo`](https://github.com/thoughtbot/bamboo), [`swoosh`](https://github.com/swoosh/swoosh) |
 | HTTP client                 | [`Tesla`](https://github.com/teamon/tesla)                                   |
-| Job processing              | ['Oban'](https://github.com/sorentwo/oban)
-| Pagination                  | [`Scrivener`](https://github.com/drewolson/scrivener)                                  |
+| Job processing              | [`Oban`](https://github.com/sorentwo/oban)
+| Pagination                  | [`Scrivener`](https://github.com/drewolson/scrivener) (limit/offset), [Quarto](https://github.com/maartenvanvliet/quarto) (cursor based)|
 | Mocks                       | [`Mox`](https://github.com/dashbitco/mox), [`Mimic`](https://github.com/edgurgel/mimic)   |
+| Cache                       | [Cachex](https://github.com/whitfin/cachex), [Nebulex](https://github.com/cabol/nebulex) (distributed cache)   |
+| Date/Time                   | [Timex](https://github.com/bitwalker/timex)                                                         |
+| CSV                         | [NimbleCSV](https://github.com/dashbitco/nimble_csv), [CSV](https://github.com/beatrichartz/csv)  |
+| Feature Flags/Toggles       | [FunWithFlags](https://github.com/tompave/fun_with_flags)                             |
 ## Development with Docker
 
 ### Dependencies
