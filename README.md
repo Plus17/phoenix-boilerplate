@@ -32,6 +32,7 @@ Here is an opinionated list of other useful libraries to consider:
 | Date/Time                   | [Timex](https://github.com/bitwalker/timex)                                                         |
 | CSV                         | [NimbleCSV](https://github.com/dashbitco/nimble_csv), [CSV](https://github.com/beatrichartz/csv)  |
 | Feature Flags/Toggles       | [FunWithFlags](https://github.com/tompave/fun_with_flags)                             |
+| Clustering                  | [libcluster](https://github.com/bitwalker/libcluster)                                 |
 ## Development with Docker
 
 ### Dependencies
