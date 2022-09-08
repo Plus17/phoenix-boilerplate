@@ -17,12 +17,6 @@ services:
       - node_modules:/app/src/assets/node_modules
     depends_on:
       - postgres
-    environment:
-      - MIX_ENV=${ENV:-dev}
-      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
-      - DATABASE_URL=${DATABASE_URL}
-      - PHX_URL_HOST=${PHX_URL_HOST}
-      - HTTP_PORT=${HTTP_PORT:-4000}
     env_file:
       - .env
     working_dir: /app/src
