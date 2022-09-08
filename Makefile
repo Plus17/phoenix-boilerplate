@@ -18,11 +18,14 @@ npm.install:
 
 bootstrap: deps.get ecto.setup npm.install
 
+setup:
+	docker-compose run --rm phx sh -c "mix setup"
+
 gen.secret:
 	docker-compose run --rm --no-deps phx sh -c "mix phx.gen.secret"
 
 reset:
-	cd backend/ && rm -rf /deps/* && rm -rf /_build/dev/* && rm -rf /_build/test/*
+	docker-compose run --rm --no-deps phx sh -c "rm -rf /app/src/deps/* && rm -rf /app/src/_build/dev/* && rm -rf /app/src/_build/test/*"
 
 #### CI/CD Commands
 
