@@ -1,4 +1,4 @@
-<h3 class="text-xl text-center text-gray-600 dark:text-gray-200">Register</h3>
+<h3 class="text-xl text-center">Register</h3>
 
 <.form let={f} for={@changeset} action={Routes.user_registration_path(@conn, :create)}>
   <%= if @changeset.action do %>
@@ -8,15 +8,15 @@
   <% end %>
 
   <div class="mt-4">
-    <%= label f, :email, class: "block text-gray-600 dark:text-gray-200 text-sm font-medium mb-2" %>
+    <%= label f, :email, class: "block text-sm font-medium mb-2" %>
     <%= text_input f, :email, required: true, class: "form-control" %>
     <%= error_tag f, :email %>
   </div>
 
   <div class="mt-4">
     <div class="flex justify-between">
-      <%= label f, :password, class: "block text-gray-600 dark:text-gray-200 text-sm font-medium mb-2" %>
-      <%= link "Forgot password?", to: Routes.user_reset_password_path(@conn, :new), class: "text-xs text-gray-500 dark:text-gray-300 hover:underline" %>
+      <%= label f, :password, class: "block text-sm font-medium mb-2" %>
+      <%= link "Forgot password?", to: Routes.user_reset_password_path(@conn, :new), class: "text-xs hover:underline" %>
     </div>
 
     <%= password_input f, :password, required: true, class: "form-control" %>
@@ -31,7 +31,7 @@
 <div class="flex items-center justify-between mt-6">
   <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
 
-  <%= link "Or Log in", to: Routes.user_session_path(@conn, :new), class: "text-xs text-gray-500 dark:text-gray-400 uppercase hover:underline" %>
+  <%= link "Or Log in", to: Routes.user_session_path(@conn, :new), class: "text-xs uppercase hover:underline" %>
 
   <span class="w-1/5 border-b dark:border-gray-600 md:w-1/4"></span>
 </div>
