@@ -1,26 +1,33 @@
 #!/bin/bash
+export LC_CTYPE=C
+export LANG=C
 
-if [[ $# -eq 0 ]] ; then
-    echo "Project name can't be empty"
+# How to run:
+# 1. Ensure you've checked your files into a git repo (`git init .`, `git add -A`, `git commit -m 'first'`)
+# 2. Modify these two values to your new app name
+NEW_NAME="YourAppName"
+NEW_OTP="your_app_name"
+# 3. Execute the script in terminal: `sh rename.sh`
+
+set -e
+
+if ! command -v ack &> /dev/null
+then
+    echo "\`ack\` could not be found. Please install it before continuing (Mac: brew install ack)."
     exit 1
 fi
 
-project="$1"
+CURRENT_NAME="AppName"
+CURRENT_OTP="app_name"
 
-mv "src/lib/app_name.ex" "src/lib/${project}.ex";
-mv "src/lib/app_name_web.ex" "src/lib/${project}_web.ex";
-mv "src/lib/app_name" "src/lib/${project}";
-mv "src/lib/app_name_web" "src/lib/${project}_web";
-mv "src/test/app_name_web" "src/lib/${project}_web";
+ack -l $CURRENT_NAME --ignore-file=is:rename.sh | xargs sed -i '' -e "s/$CURRENT_NAME/$NEW_NAME/g"
+ack -l $CURRENT_OTP --ignore-file=is:rename.sh | xargs sed -i '' -e "s/$CURRENT_OTP/$NEW_OTP/g"
 
-IFS='_' read -r -a array <<< "$project"
+git mv lib/$CURRENT_OTP lib/$NEW_OTP
+git mv lib/$CURRENT_OTP.ex lib/$NEW_OTP.ex
+git mv lib/${CURRENT_OTP}_web lib/${NEW_OTP}_web
+git mv lib/${CURRENT_OTP}_web.ex lib/${NEW_OTP}_web.ex
 
-pascalProject=""
-for element in "${array[@]}"
-do
-    element="$(tr '[:lower:]' '[:upper:]' <<< ${element:0:1})${element:1}"
-    pascalProject="${pascalProject}${element}"
-done
+git mv test/$CURRENT_OTP test/$NEW_OTP
 
-LC_ALL=C find ./src -type f -exec sed -i '' -e "s/app_name/${project}/" {} \;
-LC_ALL=C find ./src -type f -exec sed -i '' -e "s/AppName/${pascalProject}/" {} \;
+git mv test/${CURRENT_OTP}_web test/${NEW_OTP}_web
