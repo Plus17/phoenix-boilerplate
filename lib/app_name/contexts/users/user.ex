@@ -3,11 +3,9 @@ defmodule AppName.Contexts.Users.User do
   User schema
   """
 
-  use Ecto.Schema
+  use AppName.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
