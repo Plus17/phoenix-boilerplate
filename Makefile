@@ -2,7 +2,7 @@ include .env
 
 default: run
 
-#### Bootstrap Commands
+#### Setup Commands
 
 deps.get:
 	docker-compose run --rm phx sh -c "mix deps.clean --unused \
@@ -16,7 +16,8 @@ npm.install:
 	docker-compose run --rm -T --no-deps phx bash -c "cd /app/src/assets && \
 	npm install"
 
-bootstrap: deps.get ecto.setup npm.install
+bootstrap:
+	docker-compose run --rm phx sh -c "mix setup"
 
 setup:
 	docker-compose run --rm phx sh -c "mix setup"
@@ -77,6 +78,9 @@ test:
 
 test.failed:
 	docker-compose run --rm phx sh -c "mix test --failed"
+
+routes:
+	docker-compose run --rm --no-deps phx sh -c "mix phx.routes"
 
 gettext:
 	docker-compose run --rm phx sh -c "mix gettext.extract --merge"
