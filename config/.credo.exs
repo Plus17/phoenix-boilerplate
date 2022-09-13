@@ -39,7 +39,8 @@
           "lib/app_name_web.ex",
           "lib/app_name_web/telemetry.ex",
           "lib/app_name/release.ex",
-          "lib/app_name/protocol_implementations.ex"
+          "lib/app_name/protocol_implementations.ex",
+          "lib/mix/tasks/gen.manager.ex"
         ]
       },
       #
