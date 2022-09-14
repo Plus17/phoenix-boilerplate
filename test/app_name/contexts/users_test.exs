@@ -506,8 +506,10 @@ defmodule AppName.Contexts.UsersTest do
   describe "setup_two_factor/2" do
     test "updates secret & user settings" do
       user = insert(:user)
-      secret = <<133, 116, 106, 186, 116, 16, 44, 124, 238, 47, 44, 148, 28, 254, 16, 246, 138,
-      197, 183, 77>>
+
+      secret =
+        <<133, 116, 106, 186, 116, 16, 44, 124, 238, 47, 44, 148, 28, 254, 16, 246, 138, 197, 183,
+          77>>
 
       {:ok, updated_user} = Users.setup_two_factor(user, secret)
 
@@ -518,8 +520,9 @@ defmodule AppName.Contexts.UsersTest do
 
   describe "deactivate_two_factor" do
     test "updates secret & user settings" do
-      secret = <<133, 116, 106, 186, 116, 16, 44, 124, 238, 47, 44, 148, 28, 254, 16, 246, 138,
-      197, 183, 77>>
+      secret =
+        <<133, 116, 106, 186, 116, 16, 44, 124, 238, 47, 44, 148, 28, 254, 16, 246, 138, 197, 183,
+          77>>
 
       user = insert(:user, totp_secret: secret, settings: %{has_2fa: true})
 
