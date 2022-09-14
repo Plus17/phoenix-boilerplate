@@ -53,7 +53,10 @@ run:
 	docker-compose run --rm --service-ports phx sh -c "mix phx.server"
 
 deps.clean:
-	docker-compose run --rm phx sh -c "mix deps.clean --unlock --unused"
+	docker-compose run --rm --no-deps phx sh -c "mix deps.clean --unlock --unused"
+
+deps.update:
+	docker-compose run --rm --no-deps phx sh -c "mix deps.update --all"
 
 ecto.migrate:
 	docker-compose run --rm phx sh -c "mix ecto.migrate"
