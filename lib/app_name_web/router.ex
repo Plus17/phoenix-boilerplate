@@ -79,6 +79,9 @@ defmodule AppNameWeb.Router do
     resources "/settings/two_factor_auth", UserSettingsTwoFactorController,
       only: [:new, :create, :delete],
       singleton: true
+
+    get "/totp", UserTOTPController, :new
+    post "/totp", UserTOTPController, :create
   end
 
   scope "/users", AppNameWeb do
