@@ -44,6 +44,7 @@ defmodule AppNameWeb.UserSettingsController do
         |> put_flash(:info, "Password updated successfully.")
         |> put_session(:user_return_to, Routes.user_settings_path(conn, :edit))
         |> UserAuth.log_in_user(user)
+        |> UserAuth.redirect_user_after_login_with_remember_me()
 
       {:error, changeset} ->
         render(conn, "edit.html", password_changeset: changeset)
