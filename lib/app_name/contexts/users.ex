@@ -356,4 +356,24 @@ defmodule AppName.Contexts.Users do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  @doc """
+  Update user with 2FA secret
+  """
+  @spec setup_two_factor(User.t(), String.t()) :: User.t()
+  def setup_two_factor(%User{} = user, secret) do
+    user
+    |> User.setup_two_factor_changeset(%{totp_secret: secret, settings: %{has_2fa: true}})
+    |> Repo.update()
+  end
+
+  @doc """
+  Deactivate user with 2FA secret
+  """
+  @spec deactivate_two_factor(User.t()) :: User.t()
+  def deactivate_two_factor(%User{} = user) do
+    user
+    |> User.deactivate_two_factor_changeset(%{totp_secret: nil, settings: %{has_2fa: false}})
+    |> Repo.update()
+  end
 end
