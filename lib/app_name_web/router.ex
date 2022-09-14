@@ -61,21 +61,19 @@ defmodule AppNameWeb.Router do
   scope "/users", AppNameWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    get "/register", UserRegistrationController, :new
-    post "/register", UserRegistrationController, :create
-    get "/log_in", UserSessionController, :new
-    post "/log_in", UserSessionController, :create
-    get "/reset_password", UserResetPasswordController, :new
-    post "/reset_password", UserResetPasswordController, :create
-    get "/reset_password/:token", UserResetPasswordController, :edit
-    put "/reset_password/:token", UserResetPasswordController, :update
+    resources "/register", UserRegistrationController, only: [:new, :create]
+    resources "/log_in", UserSessionController, only: [:new, :create]
+
+    resources "/reset_password", UserResetPasswordController,
+      only: [:new, :create, :edit, :update],
+      param: "token"
   end
 
   scope "/users", AppNameWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/settings", UserSettingsController, :edit
-    put "/settings", UserSettingsController, :update
+    resources "/settings", UserSettingsController, only: [:edit, :update], singleton: true
+
     get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
   end
 
@@ -83,10 +81,10 @@ defmodule AppNameWeb.Router do
     pipe_through [:browser]
 
     delete "/log_out", UserSessionController, :delete
-    get "/confirm", UserConfirmationController, :new
-    post "/confirm", UserConfirmationController, :create
-    get "/confirm/:token", UserConfirmationController, :edit
-    post "/confirm/:token", UserConfirmationController, :update
+
+    resources "/confirm", UserConfirmationController,
+      only: [:new, :create, :edit, :update],
+      param: "token"
   end
 
   scope "/health", log: false do

@@ -65,14 +65,14 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
     end
   end
 
-  describe "POST /users/confirm/:token" do
+  describe "PUT /users/confirm/:token" do
     test "confirms the given token once", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->
           Users.deliver_user_confirmation_instructions(user, url)
         end)
 
-      conn = post(conn, Routes.user_confirmation_path(conn, :update, token))
+      conn = put(conn, Routes.user_confirmation_path(conn, :update, token))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :info) =~ "User confirmed successfully"
       assert Users.get_user!(user.id).confirmed_at
@@ -80,7 +80,7 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
       assert Repo.all(Users.UserToken) == []
 
       # When not logged in
-      conn = post(conn, Routes.user_confirmation_path(conn, :update, token))
+      conn = put(conn, Routes.user_confirmation_path(conn, :update, token))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
 
@@ -88,14 +88,14 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
       conn =
         build_conn()
         |> log_in_user(user)
-        |> post(Routes.user_confirmation_path(conn, :update, token))
+        |> put(Routes.user_confirmation_path(conn, :update, token))
 
       assert redirected_to(conn) == "/"
       refute get_flash(conn, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
-      conn = post(conn, Routes.user_confirmation_path(conn, :update, "oops"))
+      conn = put(conn, Routes.user_confirmation_path(conn, :update, "oops"))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
       refute Users.get_user!(user.id).confirmed_at
