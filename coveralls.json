@@ -19,8 +19,16 @@
     "test/support/data_case.ex",
     "lib/app_name_web/views/error_helpers.ex",
     "lib/app_name_web/views/error_view.ex",
-    "lib/yumkaax/release.ex",
+    "lib/release.ex",
     "lib/app_name_web/telemetry.ex",
-    "lib/app_name/application.ex"
+    "lib/app_name/application.ex",
+    "lib/app_name_web/views/layout_view.ex",
+    "lib/app_name_web/views/page_view.ex",
+    "lib/app_name_web/views/user_confirmation",
+    "lib/app_name_web/views/user_registration",
+    "lib/app_name_web/views/user_reset_passwo",
+    "lib/app_name_web/views/user_session_view",
+    "lib/app_name_web/views/user_settings_vie",
+    "lib/mix/tasks/gen.manager.ex"
   ]
 }
