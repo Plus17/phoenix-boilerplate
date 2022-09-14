@@ -75,6 +75,10 @@ defmodule AppNameWeb.Router do
     resources "/settings", UserSettingsController, only: [:edit, :update], singleton: true
 
     get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    resources "/settings/two_factor_auth", UserSettingsTwoFactorController,
+      only: [:new, :create, :delete],
+      singleton: true
   end
 
   scope "/users", AppNameWeb do
