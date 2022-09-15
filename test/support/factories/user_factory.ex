@@ -18,6 +18,10 @@ defmodule AppName.UserFactory do
           totp_secret: nil
         }
       end
+
+      def with_2fa(user) do
+        %{user | totp_secret: NimbleTOTP.secret(), settings: %Settings{has_2fa: true}}
+      end
     end
   end
 end
