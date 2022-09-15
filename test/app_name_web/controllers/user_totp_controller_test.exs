@@ -46,8 +46,7 @@ defmodule AppNameWeb.UserTOTPControllerTest do
       valid_code = NimbleTOTP.verification_code(user.totp_secret)
 
       response =
-        get_conn
-        |> post(Routes.user_totp_path(conn, :create), user: %{"code" => valid_code})
+        post(get_conn, Routes.user_totp_path(conn, :create), user: %{"code" => valid_code})
 
       assert redirected_to(response) == Routes.page_path(conn, :index)
 

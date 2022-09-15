@@ -17,8 +17,7 @@ defmodule AppNameWeb.UserSettingsTwoFactorControllerTest do
   describe "create" do
     test "when user enter bad code", %{conn: conn} do
       response =
-        conn
-        |> post(Routes.user_settings_two_factor_path(conn, :create), user: %{"otp" => "12345"})
+        post(conn, Routes.user_settings_two_factor_path(conn, :create), user: %{"otp" => "12345"})
 
       assert redirected_to(response) == Routes.user_settings_two_factor_path(conn, :new)
       assert get_flash(response, :error) =~ "OTP code is invalid"
@@ -32,8 +31,9 @@ defmodule AppNameWeb.UserSettingsTwoFactorControllerTest do
       valid_code = NimbleTOTP.verification_code(secret)
 
       response =
-        get_conn
-        |> post(Routes.user_settings_two_factor_path(conn, :create), user: %{"otp" => valid_code})
+        post(get_conn, Routes.user_settings_two_factor_path(conn, :create),
+          user: %{"otp" => valid_code}
+        )
 
       assert redirected_to(response) == Routes.user_settings_path(conn, :edit)
       assert get_flash(response, :info) =~ "2FA activated successfully."
