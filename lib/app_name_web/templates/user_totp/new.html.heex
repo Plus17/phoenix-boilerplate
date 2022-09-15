@@ -1,0 +1,27 @@
+<%= if @error_message do %>
+  <div class="alert alert-danger mt-0 mb-4">
+    <div><%= @error_message %></div>
+  </div>
+<% end %>
+
+<div class="text-center">
+  <h4>Two-factor authentication</h4>
+  <p class="mb-4">Enter the six-digit code from your device or any of your eight-character backup codes to finish logging in.</p>
+</div>
+
+<.form let={f} for={:user} action={Routes.user_totp_path(@conn, :create)} method="POST" id="user_otp">
+  <div class="text-center pt-2">
+    <%= text_input f, :code, required: true, class: "input input-bordered" %>
+
+    <div class="mt-4">
+      <%= label f, :remember_me, class: "block text-sm font-medium mb-2" do %>
+        <%= checkbox f, :remember_me, class: "form-checkbox" %>
+        <span class="ml-1">Keep me logged in for 60 days</span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="text-center pt-2">
+    <%= submit "Verify code", class: "btn btn-primary" %>
+  </div>
+</.form>

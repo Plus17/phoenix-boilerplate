@@ -59,7 +59,8 @@ defmodule AppNameWeb.UserSessionControllerTest do
         |> post(Routes.user_session_path(conn, :create), %{
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password()
+            "password" => valid_user_password(),
+            "remember_me" => "true"
           }
         })
 

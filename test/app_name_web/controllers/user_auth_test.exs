@@ -15,28 +15,52 @@ defmodule AppNameWeb.UserAuthTest do
     %{user: insert(:user), conn: conn}
   end
 
-  describe "log_in_user/3" do
+  describe "log_in_user/2" do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
-      assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == "/"
+      assert get_session(conn, :live_socket_id) == "users_sessions:#{token}"
       assert Users.get_user_by_session_token(token)
+    end
+
+    test "persists user_return_to", %{conn: conn, user: user} do
+      assert conn
+             |> put_session(:user_return_to, "/foo/bar")
+             |> UserAuth.log_in_user(user)
+             |> get_session(:user_return_to) == "/foo/bar"
     end
 
     test "clears everything previously stored in the session", %{conn: conn, user: user} do
       conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(user)
       refute get_session(conn, :to_be_removed)
     end
+  end
 
-    test "redirects to the configured path", %{conn: conn, user: user} do
-      conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
-      assert redirected_to(conn) == "/hello"
+  describe "redirect_user_after_login_with_remember_me/2" do
+    test "redirects home by default", %{conn: conn} do
+      assert conn
+             |> UserAuth.redirect_user_after_login_with_remember_me()
+             |> redirected_to() == Routes.page_path(conn, :index)
     end
 
-    test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
-      conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
+    test "redirects to the configured path", %{conn: conn} do
+      conn =
+        conn
+        |> put_session(:user_return_to, "/hello")
+        |> UserAuth.redirect_user_after_login_with_remember_me()
+
+      assert redirected_to(conn) == "/hello"
+      refute get_session(conn, :user_return_to)
+    end
+
+    test "writes a cookie if remember_me is configured", %{conn: conn} do
+      conn =
+        conn
+        |> fetch_cookies()
+        |> put_session(:user_token, "abcdef")
+        |> UserAuth.redirect_user_after_login_with_remember_me(%{"remember_me" => "true"})
+
+      assert conn.cookies[@remember_me_cookie] == "abcdef"
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
       assert signed_token != get_session(conn, :user_token)
@@ -90,7 +114,10 @@ defmodule AppNameWeb.UserAuthTest do
 
     test "authenticates user from cookies", %{conn: conn, user: user} do
       logged_in_conn =
-        conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
+        conn
+        |> fetch_cookies()
+        |> UserAuth.log_in_user(user)
+        |> UserAuth.redirect_user_after_login_with_remember_me(%{"remember_me" => "true"})
 
       user_token = logged_in_conn.cookies[@remember_me_cookie]
       %{value: signed_token} = logged_in_conn.resp_cookies[@remember_me_cookie]
@@ -126,6 +153,15 @@ defmodule AppNameWeb.UserAuthTest do
     end
   end
 
+  describe "maybe_store_user_return_to/2" do
+    test "does not store if user is logged in", %{conn: conn, user: user} do
+      refute conn
+             |> assign(:current_user, user)
+             |> UserAuth.maybe_store_user_return_to([])
+             |> get_session(:user_return_to)
+    end
+  end
+
   describe "require_authenticated_user/2" do
     test "redirects if user is not authenticated", %{conn: conn} do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
@@ -134,9 +170,20 @@ defmodule AppNameWeb.UserAuthTest do
       assert get_flash(conn, :error) == "You must log in to access this page."
     end
 
+    test "redirects if user is authenticated but pending totp", %{conn: conn, user: user} do
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> put_session(:user_totp_pending, true)
+        |> UserAuth.require_authenticated_user([])
+
+      assert conn.halted
+      assert redirected_to(conn) == Routes.user_totp_path(conn, :new)
+    end
+
     test "stores the path to redirect to on GET", %{conn: conn} do
       halted_conn =
-        %{conn | path_info: ["foo"], query_string: ""}
+        %{conn | request_path: "/foo", query_string: ""}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
@@ -144,7 +191,7 @@ defmodule AppNameWeb.UserAuthTest do
       assert get_session(halted_conn, :user_return_to) == "/foo"
 
       halted_conn =
-        %{conn | path_info: ["foo"], query_string: "bar=baz"}
+        %{conn | request_path: "/foo", query_string: "bar=baz"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
@@ -152,7 +199,7 @@ defmodule AppNameWeb.UserAuthTest do
       assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
 
       halted_conn =
-        %{conn | path_info: ["foo"], query_string: "bar", method: "POST"}
+        %{conn | request_path: "/foo?bar", method: "POST"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 

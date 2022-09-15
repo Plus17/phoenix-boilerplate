@@ -1,4 +1,10 @@
-<h2 class="text-lg font-semibold text-gray-700 capitalize dark:text-white">Account settings</h2>
+<h2 class="text-lg font-semibold capitalize">Account settings</h2>
+
+<%= if @conn.assigns.current_user.settings.has_2fa do %>
+  <%= link("Deactivate 2FA", to: Routes.user_settings_two_factor_path(@conn, :delete), class: "btn", method: :delete, data: [confirm: "Really?"]) %>
+<% else %>
+  <%= link("Activate 2FA", to: Routes.user_settings_two_factor_path(@conn, :new), class: "btn") %>
+<% end %>
 
 <h3 class="mt-12 font-semibold text-gray-700 dark:text-white">Change email</h3>
 

@@ -6,13 +6,31 @@ defmodule AppName.Contexts.Users.User do
   use AppName.Schema
   import Ecto.Changeset
 
+  alias AppName.Schemas.Users.Settings
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :totp_secret, :binary
+
+    embeds_one :settings, Settings, on_replace: :update
 
     timestamps()
+  end
+
+  def setup_two_factor_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:totp_secret])
+    |> validate_required([:totp_secret])
+    |> cast_embed(:settings, required: true)
+  end
+
+  def deactivate_two_factor_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:totp_secret])
+    |> cast_embed(:settings, required: true)
   end
 
   @doc """

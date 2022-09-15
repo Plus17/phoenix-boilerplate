@@ -7,7 +7,7 @@ defmodule AppName.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -61,6 +61,8 @@ defmodule AppName.MixProject do
 
       # Auth
       {:argon2_elixir, "~> 3.0"},
+      {:nimble_totp, "~> 0.1.0"},
+      {:eqrcode, "~> 0.1.10"},
 
       # Code quality
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},

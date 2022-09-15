@@ -25,33 +25,22 @@ defmodule AppNameWeb.UserAuth do
   disconnected on log out. The line can be safely removed
   if you are not using LiveView.
   """
-  def log_in_user(conn, user, params \\ %{}) do
+  def log_in_user(conn, user) do
     token = Users.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_session(:user_token, token)
-    |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token)}")
-    |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
-  end
-
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
-  end
-
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
+    |> put_session(:live_socket_id, "users_sessions:#{token}")
   end
 
   # This function renews the session ID and erases the whole
   # session to avoid fixation attacks. If there is any data
-  # in the session you may want to preserve after log in/log out,
+  # in the session you may want to preserve after login/logout,
   # you must explicitly fetch the session data before clearing
   # and then immediately set it after clearing, for example:
   #
-  #     defp renew_session(conn) do
+  #     def renew_session(conn) do
   #       preferred_locale = get_session(conn, :preferred_locale)
   #
   #       conn
@@ -61,9 +50,33 @@ defmodule AppNameWeb.UserAuth do
   #     end
   #
   defp renew_session(conn) do
+    user_return_to = get_session(conn, :user_return_to)
+
     conn
     |> configure_session(renew: true)
     |> clear_session()
+    |> put_session(:user_return_to, user_return_to)
+  end
+
+  @doc """
+  Returns to or redirects home and potentially set remember_me token.
+  """
+  def redirect_user_after_login_with_remember_me(conn, params \\ %{}) do
+    user_return_to = get_session(conn, :user_return_to)
+
+    conn
+    |> maybe_remember_user(params)
+    |> delete_session(:user_return_to)
+    |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  defp maybe_remember_user(conn, %{"remember_me" => "true"}) do
+    token = get_session(conn, :user_token)
+    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
+  end
+
+  defp maybe_remember_user(conn, _params) do
+    conn
   end
 
   @doc """
@@ -129,22 +142,42 @@ defmodule AppNameWeb.UserAuth do
   they use the application at all, here would be a good place.
   """
   def require_authenticated_user(conn, _opts) do
-    if conn.assigns[:current_user] do
-      conn
-    else
-      conn
-      |> put_flash(:error, "You must log in to access this page.")
-      |> maybe_store_return_to()
-      |> redirect(to: Routes.user_session_path(conn, :new))
-      |> halt()
+    cond do
+      is_nil(conn.assigns[:current_user]) ->
+        conn
+        |> put_flash(:error, "You must log in to access this page.")
+        |> maybe_store_user_return_to()
+        |> redirect(to: Routes.user_session_path(conn, :new))
+        |> halt()
+
+      get_session(conn, :user_totp_pending) && conn.path_info != ["users", "totp"] &&
+          conn.path_info != ["users", "logout"] ->
+        conn
+        |> redirect(to: Routes.user_totp_path(conn, :new))
+        |> halt()
+
+      true ->
+        conn
     end
   end
 
-  defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :user_return_to, current_path(conn))
+  @doc """
+  Stores return to in the session as long as it is a GET request
+  and the user is not authenticated.
+  """
+  def maybe_store_user_return_to(conn, _opts) do
+    maybe_store_user_return_to(conn)
   end
 
-  defp maybe_store_return_to(conn), do: conn
+  defp maybe_store_user_return_to(%{assigns: %{current_user: %{}}} = conn), do: conn
+
+  defp maybe_store_user_return_to(%{method: "GET"} = conn) do
+    %{request_path: request_path, query_string: query_string} = conn
+    return_to = if query_string == "", do: request_path, else: request_path <> "?" <> query_string
+    put_session(conn, :user_return_to, return_to)
+  end
+
+  defp maybe_store_user_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: "/"
 end
