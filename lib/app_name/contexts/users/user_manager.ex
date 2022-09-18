@@ -39,5 +39,4 @@ defmodule AppName.Contexts.Users.UserManager do
     |> User.admin_changeset(attrs)
     |> Repo.insert()
   end
-
 end

@@ -34,7 +34,6 @@ defmodule AppName.Contexts.Users.User do
     |> cast_embed(:settings, required: true)
   end
 
-
   @doc """
   A user changeset for admin seed operation.
 
