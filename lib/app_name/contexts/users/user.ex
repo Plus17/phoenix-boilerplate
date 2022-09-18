@@ -14,6 +14,7 @@ defmodule AppName.Contexts.Users.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :totp_secret, :binary
+    field :is_admin, :boolean, default: false
 
     embeds_one :settings, Settings, on_replace: :update
 
@@ -31,6 +32,19 @@ defmodule AppName.Contexts.Users.User do
     user
     |> cast(attrs, [:totp_secret])
     |> cast_embed(:settings, required: true)
+  end
+
+
+  @doc """
+  A user changeset for admin seed operation.
+
+  Don't use for user registrations.
+  """
+  def admin_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :is_admin])
+    |> validate_email()
+    |> validate_password(opts)
   end
 
   @doc """
