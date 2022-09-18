@@ -213,4 +213,26 @@ defmodule AppNameWeb.UserAuthTest do
       refute conn.status
     end
   end
+
+  describe "require_admin_user/2" do
+    test "redirects if user is not admin", %{conn: conn, user: user} do
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> fetch_flash()
+        |> UserAuth.require_admin_user([])
+
+      assert conn.halted
+      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      assert get_flash(conn, :error) == "You must log in to access this page."
+    end
+
+    test "does not redirect if user is admin", %{conn: conn, user: user} do
+      conn =
+        conn |> assign(:current_user, %{user | is_admin: true}) |> UserAuth.require_admin_user([])
+
+      refute conn.halted
+      refute conn.status
+    end
+  end
 end
