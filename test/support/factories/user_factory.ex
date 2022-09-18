@@ -15,12 +15,17 @@ defmodule AppName.UserFactory do
           hashed_password:
             "$argon2id$v=19$m=65536,t=8,p=2$CH+c9Kx5QTJhQvKxQgbe9A$/I7GNjrwptBIDz8Q3C1ds31z1Vy427rpmumQcK86aGA",
           settings: %Settings{has_2fa: false},
-          totp_secret: nil
+          totp_secret: nil,
+          is_admin: false
         }
       end
 
       def with_2fa(user) do
         %{user | totp_secret: NimbleTOTP.secret(), settings: %Settings{has_2fa: true}}
+      end
+
+      def make_admin(user) do
+        %{user | is_admin: true}
       end
     end
   end
