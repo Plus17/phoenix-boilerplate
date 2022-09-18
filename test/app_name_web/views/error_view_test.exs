@@ -15,6 +15,7 @@ defmodule AppNameWeb.ErrorViewTest do
   test "renders error.json" do
     assert render_to_string(AppNameWeb.ErrorView, "error.json",
              message: "External service is not available"
-           ) == ~s[{"data":null,"errors":null,"message":"External service is not available","status":"error"}]
+           ) ==
+             ~s[{"data":null,"errors":null,"message":"External service is not available","status":"error"}]
   end
 end

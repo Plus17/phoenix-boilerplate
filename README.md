@@ -33,6 +33,13 @@ Here is an opinionated list of other useful libraries to consider:
 | CSV                         | [NimbleCSV](https://github.com/dashbitco/nimble_csv), [CSV](https://github.com/beatrichartz/csv)  |
 | Feature Flags/Toggles       | [FunWithFlags](https://github.com/tompave/fun_with_flags)                             |
 | Clustering                  | [libcluster](https://github.com/bitwalker/libcluster)                                 |
+
+## Rename your porject
+1. Open the script `rename.sh`
+2. Change `NEW_NAME` & `NEW_OTP` variables with your app name
+3. Execute the script `sh rename.sh`
+3. Remove the file `rename.sh`
+
 ## Development with Docker
 
 ### Dependencies
