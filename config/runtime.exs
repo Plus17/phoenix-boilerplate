@@ -47,6 +47,8 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :app_name, :seeds, admin_password: System.fetch_env!("ADMIN_PASSWORD")
+
   # ## Using releases
   #
   # If you are doing OTP releases, you need to instruct Phoenix

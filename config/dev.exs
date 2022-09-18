@@ -71,3 +71,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :app_name, :seeds, admin_password: System.fetch_env!("ADMIN_PASSWORD")
