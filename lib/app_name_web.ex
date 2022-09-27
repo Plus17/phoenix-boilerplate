@@ -37,6 +37,8 @@ defmodule AppNameWeb do
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
+      import Phoenix.Component
+
       # Include shared imports and aliases for views
       unquote(view_helpers())
     end
@@ -59,6 +61,14 @@ defmodule AppNameWeb do
     end
   end
 
+  def component do
+    quote do
+      use Phoenix.Component
+
+      unquote(view_helpers())
+    end
+  end
+
   def router do
     quote do
       use Phoenix.Router
@@ -66,6 +76,7 @@ defmodule AppNameWeb do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+      import Phoenix.Component
     end
   end
 
