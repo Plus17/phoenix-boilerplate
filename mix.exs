@@ -72,7 +72,10 @@ defmodule AppName.MixProject do
       {:ex_machina, "~> 2.7.0", only: :test},
 
       # Other ...
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+
+      # pagination
+      {:paginator, "~> 1.1.0"}
     ]
   end
 

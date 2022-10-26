@@ -2,7 +2,8 @@ defmodule AppNameWeb.InitAssigns do
   @moduledoc """
   Ensures common `assigns` are applied to all LiveViews attaching this hook.
   """
-  import Phoenix.LiveView
+  import Phoenix.Component, only: [assign: 3]
+  import Phoenix.LiveView, only: [redirect: 2]
 
   require Logger
 
@@ -17,10 +18,10 @@ defmodule AppNameWeb.InitAssigns do
     user = Users.get_user_by_session_token(user_token)
 
     if user && user.is_admin do
-      Logger.debug("[InitAssigns] current admin user")
+      Logger.debug("[InitAssigns] Current user is admin")
       {:cont, assign(socket, :current_user, user)}
     else
-      Logger.debug("[InitAssigns] No current admin user, halting")
+      Logger.warn("[InitAssigns] Current user is not admin, halting")
       {:halt, redirect(socket, to: Routes.user_session_path(socket, :new))}
     end
   end

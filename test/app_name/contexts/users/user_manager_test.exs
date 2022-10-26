@@ -1,7 +1,7 @@
 defmodule AppName.Contexts.Users.UserManagerTest do
-	use AppName.DataCase
+  use AppName.DataCase
 
-	alias AppName.Contexts.Users.UserManager
+  alias AppName.Contexts.Users.UserManager
 
   describe "list/0" do
     test "when doesn't exists users" do
@@ -19,10 +19,10 @@ defmodule AppName.Contexts.Users.UserManagerTest do
       email = unique_user_email()
       password = valid_user_password()
 
-      assert {:ok, user} = UserManager.create_admin(%{email: email, password: password, is_admin: true})
+      assert {:ok, user} =
+               UserManager.create_admin(%{email: email, password: password, is_admin: true})
 
       assert user.is_admin
     end
   end
-
 end

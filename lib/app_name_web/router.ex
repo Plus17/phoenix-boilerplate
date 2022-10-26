@@ -94,6 +94,14 @@ defmodule AppNameWeb.Router do
       param: "token"
   end
 
+  live_session :admins, on_mount: {AppNameWeb.InitAssigns, :admin} do
+    scope "/admin", AppNameWeb, as: :admin do
+      pipe_through [:browser, :require_authenticated_user, :require_admin_user]
+
+      live "/dashboard", Admin.DashboardLive
+    end
+  end
+
   scope "/health", log: false do
     forward "/", AppNameWeb.Plugs.HealthCheck
   end
