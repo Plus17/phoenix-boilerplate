@@ -9,6 +9,14 @@ defmodule AppName.Contexts.Users.UserManager do
 
   alias AppName.Contexts.Users.User
 
+  @default_opts [
+    before: nil,
+    after: nil,
+    filters: [],
+    limit: 10,
+    sort: %{sort_by: :inserted_at, sort_order: :asc}
+  ]
+
   @doc """
   Returns the list of users.
 
@@ -19,33 +27,37 @@ defmodule AppName.Contexts.Users.UserManager do
 
   """
   @spec list(Keyword.t()) :: [User.t()]
-  def list(opts \\ []) when is_list(opts) do
-    opts |> IO.inspect(label: "OPTS")
-    limit = Keyword.get(opts, :limit, 10)
+  def list(opts \\ @default_opts) when is_list(opts) do
+    opts = Keyword.merge(@default_opts, opts)
+    filters = Keyword.fetch!(opts, :filters)
+
+    %{sort_by: sort_by, sort_order: sort_order} = Keyword.get(opts, :sort)
 
     User
-    |> order_by(:inserted_at)
-    |> Repo.paginate(cursor_fields: [:inserted_at, :id], limit: limit)
+    |> where([], ^filters)
+    |> order_by([{^sort_order, ^sort_by}])
+    |> paginate(opts)
   end
 
+  # Paginate query
+  @spec paginate(Ecto.Query.t(), Keyword.t()) :: [User.t()]
+  defp paginate(query, opts) do
+    limit = Keyword.get(opts, :limit)
 
-  @spec list(map(), Keyword.t()) :: [User.t()]
-  def list(params, opts \\ [])
+    case Keyword.take(opts, [:before, :after]) do
+      [before: nil, after: nil] ->
+        Repo.paginate(query, cursor_fields: [:inserted_at, :id], limit: limit)
 
-  def list(%{after: cursor_after}, opts) when is_binary(cursor_after) do
-    limit = Keyword.get(opts, :limit, 10)
+      [before: nil, after: cursor_after] when is_binary(cursor_after) ->
+        Repo.paginate(query, after: cursor_after, cursor_fields: [:inserted_at, :id], limit: limit)
 
-    User
-    |> order_by(:inserted_at)
-    |> Repo.paginate(after: cursor_after, cursor_fields: [:inserted_at, :id], limit: limit)
-  end
-
-  def list(%{before: cursor_before}, opts) when is_binary(cursor_before) do
-    limit = Keyword.get(opts, :limit, 10)
-
-    User
-    |> order_by(:inserted_at)
-    |> Repo.paginate(before: cursor_before, cursor_fields: [:inserted_at, :id], limit: limit)
+      [after: nil, before: cursor_before] when is_binary(cursor_before) ->
+        Repo.paginate(query,
+          before: cursor_before,
+          cursor_fields: [:inserted_at, :id],
+          limit: limit
+        )
+    end
   end
 
   @doc """
@@ -59,6 +71,7 @@ defmodule AppName.Contexts.Users.UserManager do
       iex> create_admin(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
   """
+  @spec create_admin(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def create_admin(attrs) do
     %User{}
     |> User.admin_changeset(attrs)

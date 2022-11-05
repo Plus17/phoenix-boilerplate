@@ -32,8 +32,6 @@ defmodule AppName.Seeds.AdminSeed do
       nil ->
         password = AppNameConfig.fetch_seeds!(:admin_password)
 
-        String.length(password)
-
         params = Map.put(@admin_params, "password", password)
 
         {:ok, admin} = UserManager.create_admin(params)

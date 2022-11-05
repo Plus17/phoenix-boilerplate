@@ -12,7 +12,7 @@ defmodule AppName.Seeds.AdminSeedTest do
     test "creates the seed data" do
       AdminSeed.run()
 
-      assert [admin_user] = UserManager.list()
+      assert %{entries: [admin_user]} = UserManager.list()
       assert admin_user.is_admin
     end
 
