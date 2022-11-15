@@ -11,7 +11,7 @@ defmodule AppNameWeb.Components.Users.UserListComponent do
   @impl true
   def preload(list_of_assigns) do
     Enum.map(list_of_assigns, fn assigns ->
-      Map.put(assigns, :users, list_users())
+      Map.put(assigns, :users, UserManager.list())
     end)
   end
 
@@ -21,28 +21,23 @@ defmodule AppNameWeb.Components.Users.UserListComponent do
   end
 
   @impl true
-  def handle_event("next_page", %{"next_page" => next_page}, socket) when is_binary(next_page)  do
-    users = UserManager.list(%{after: next_page}, limit: 1)
+  def handle_event("next_page", %{"next_page" => next_page}, socket) when is_binary(next_page) do
+    users = UserManager.list(after: next_page)
 
     {:noreply, assign(socket, :users, users)}
   end
 
   @impl true
-  def handle_event("prev_page", %{"prev_page" => prev_page}, socket) when is_binary(prev_page)  do
-    users = UserManager.list(%{before: prev_page}, limit: 1)
+  def handle_event("prev_page", %{"prev_page" => prev_page}, socket) when is_binary(prev_page) do
+    users = UserManager.list(before: prev_page)
 
     {:noreply, assign(socket, :users, users)}
   end
 
-  def pass_page(js \\ %JS{}) do
-    js
-    |> JS.hide(transition: "fade-out", to: "#user-content")
-  end
-
-  defp list_users() do
-    UserManager.list()
-  end
-
+  @doc """
+  Return a string depending if the user has a confirmed_at value
+  """
+  @spec confirmed_user(User.t()) :: String.t()
   def confirmed_user(user) do
     if user.confirmed_at do
       "Yes"
