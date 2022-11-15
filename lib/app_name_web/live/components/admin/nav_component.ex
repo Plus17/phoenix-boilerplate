@@ -5,7 +5,6 @@ defmodule AppNameWeb.Components.Admin.NavComponent do
   use AppNameWeb, :component
 
   def nav(assigns) do
-    assigns.socket |> IO.inspect(label: "ASSIGNS", printable_limit: :infinity, limit: :infinity)
     ~H"""
     <div class="flex-1 px-2 mx-2">Admin options</div>
     <div class="flex-none hidden lg:block">
