@@ -56,8 +56,6 @@ defmodule AppName.Contexts.Users.UserManagerTest do
       first_user = insert(:user, inserted_at: now)
       second_user = insert(:user, inserted_at: tomorrow)
 
-
-
       assert %Paginator.Page{
                metadata: %Paginator.Page.Metadata{
                  after: after_cursor,
