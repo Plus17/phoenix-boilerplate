@@ -1,10 +1,10 @@
 defmodule AppNameWeb.Admin.UserLiveTest do
-  use AppNameWeb.ConnCase
+  use AppNameWeb.ConnCase, async: true
 
   setup :register_and_log_in_admin_user
 
   test "disconnected and connected mount", %{conn: conn} do
-    insert_list(20, :user)
+    insert_list(11, :user)
 
     conn = get(conn, Routes.admin_live_path(@endpoint, AppNameWeb.Admin.UserLive))
 

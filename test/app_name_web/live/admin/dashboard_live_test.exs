@@ -1,5 +1,5 @@
 defmodule AppNameWeb.Admin.DashboardLiveTest do
-  use AppNameWeb.ConnCase
+  use AppNameWeb.ConnCase, async: true
 
   setup :register_and_log_in_admin_user
 

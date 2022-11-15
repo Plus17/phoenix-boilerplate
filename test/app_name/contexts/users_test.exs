@@ -1,5 +1,5 @@
 defmodule AppName.Contexts.UsersTest do
-  use AppName.DataCase
+  use AppName.DataCase, async: true
 
   alias AppName.Contexts.Users
   alias AppName.Contexts.Users.User
