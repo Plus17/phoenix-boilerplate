@@ -99,6 +99,7 @@ defmodule AppNameWeb.Router do
       pipe_through [:browser, :require_authenticated_user, :require_admin_user]
 
       live "/dashboard", Admin.DashboardLive
+      live "/dashboard/users", Admin.UserLive
     end
   end
 
