@@ -1,5 +1,5 @@
 defmodule AppName.Contexts.Users.UserManagerTest do
-  use AppName.DataCase
+  use AppName.DataCase, async: true
 
   alias AppName.Contexts.Users.UserManager
 
@@ -51,8 +51,12 @@ defmodule AppName.Contexts.Users.UserManagerTest do
     end
 
     test "when passes after cursor" do
-      first_user = insert(:user)
-      second_user = insert(:user)
+      now = DateTime.utc_now()
+      tomorrow = DateTime.add(now, 2, :day)
+      first_user = insert(:user, inserted_at: now)
+      second_user = insert(:user, inserted_at: tomorrow)
+
+
 
       assert %Paginator.Page{
                metadata: %Paginator.Page.Metadata{
