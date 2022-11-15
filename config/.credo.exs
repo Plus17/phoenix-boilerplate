@@ -198,6 +198,7 @@
              excluded: [
                ~r"/lib/app_name_web/views/",
                ~r"/lib/app_name_web/controllers/",
+               ~r"/lib/app_name_web/live/",
                ~r"/test/factories",
                "lib/app_name/contexts/users/user.ex",
                "lib/app_name/contexts/users/user_notifier.ex",
