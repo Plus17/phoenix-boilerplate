@@ -1,0 +1,9 @@
+<div class="flex-1 px-2 mx-2">Admin options</div>
+<div class="flex-none hidden lg:block">
+  <ul class="menu menu-horizontal">
+    <!-- Navbar menu content here -->
+    <li>
+      <%= live_patch "Users", to: Routes.admin_live_path(@socket, AppNameWeb.Admin.UserLive) %>
+    </li>
+  </ul>
+</div>
