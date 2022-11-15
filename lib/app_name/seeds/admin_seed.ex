@@ -30,7 +30,7 @@ defmodule AppName.Seeds.AdminSeed do
 
     case Users.get_user_by_email(@admin_params["email"]) do
       nil ->
-        password = AppNameConfig.fetch_seeds!(:admin_password)
+        password = AppName.config([:seeds, :admin_password])
 
         params = Map.put(@admin_params, "password", password)
 
