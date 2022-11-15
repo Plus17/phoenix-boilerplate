@@ -23,6 +23,7 @@ defmodule AppNameWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import AppName.Factory
+      import Phoenix.LiveViewTest
       import AppNameWeb.ConnCase
 
       alias AppNameWeb.Router.Helpers, as: Routes
@@ -48,6 +49,19 @@ defmodule AppNameWeb.ConnCase do
   """
   def register_and_log_in_user(%{conn: conn}) do
     user = AppName.Factory.insert(:user)
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  @doc """
+  Setup helper that registers and logs in admin users.
+
+      setup :register_and_log_in_admin_user
+
+  It stores an updated connection and a registered user in the
+  test context.
+  """
+  def register_and_log_in_admin_user(%{conn: conn}) do
+    user = AppName.Factory.insert(:user, is_admin: true)
     %{conn: log_in_user(conn, user), user: user}
   end
 
