@@ -4,7 +4,8 @@ defmodule AppNameWeb.Admin.UserLiveTest do
   setup :register_and_log_in_admin_user
 
   test "disconnected and connected mount", %{conn: conn} do
-    insert_list(11, :user)
+    insert_list(10, :user, inserted_at: DateTime.utc_now())
+    insert(:user, inserted_at: DateTime.add(DateTime.utc_now(), 120, :second))
 
     conn = get(conn, Routes.admin_live_path(@endpoint, AppNameWeb.Admin.UserLive))
 
@@ -12,6 +13,7 @@ defmodule AppNameWeb.Admin.UserLiveTest do
 
     assert response =~ "Registered users"
     assert response =~ "<button class=\"btn btn-outline\" disabled>Previous page</button>"
+
     refute response =~ "<button class=\"btn btn-outline\" disabled>Next</button>"
 
     {:ok, view, _html} = live(conn)

@@ -52,7 +52,7 @@ defmodule AppName.Contexts.Users.UserManagerTest do
 
     test "when passes after cursor" do
       now = DateTime.utc_now()
-      tomorrow = DateTime.add(now, 2, :day)
+      tomorrow = DateTime.add(now, 120, :second)
       first_user = insert(:user, inserted_at: now)
       second_user = insert(:user, inserted_at: tomorrow)
 
