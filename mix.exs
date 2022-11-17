@@ -14,6 +14,7 @@ defmodule AppName.MixProject do
       elixirc_options: [warnings_as_errors: true],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
+        test: :test,
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
@@ -88,7 +89,12 @@ defmodule AppName.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "npm.install": ["cmd npm install --prefix ./assets"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test --warnings-as-errors"],
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "test --warnings-as-errors"
+      ],
+      ci: ["compile", "format --check-formatted", "credo --strict", "cmd MIX_ENV=test mix test"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
