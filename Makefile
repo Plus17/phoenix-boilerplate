@@ -44,6 +44,9 @@ coverage:
 
 check.all: compile check.formatter credo coverage
 
+ci:
+	docker-compose run --rm phx sh -c "mix ci"
+
 #### Development Commands
 
 seeds:
