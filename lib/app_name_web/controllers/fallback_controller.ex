@@ -11,31 +11,32 @@ defmodule AppNameWeb.FallbackController do
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> put_view(AppNameWeb.ChangesetView)
+    |> put_view(json: AppNameWeb.ChangesetJSON)
     |> render("error.json", changeset: changeset)
+  end
+
+  # This clause is an example of how to handle resources that cannot be found.
+  def call(conn, {:error, :not_found}) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(html: AppNameWeb.ErrorHTML, json: AppNameWeb.ErrorJSON)
+    |> render(:"404")
   end
 
   @spec call(Plug.Conn.t(), tuple()) :: String.t()
   def call(conn, {:success, module, view, assigns}) do
     conn
     |> put_status(200)
-    |> put_view(module)
+    |> put_view(json: module)
     |> render(view, assigns)
   end
 
   @spec call(Plug.Conn.t(), tuple) :: String.t()
-  def call(conn, {:created, module, view, assigns}) do
+  def call(conn, {:created, location, module, view, assigns}) do
     conn
     |> put_status(:created)
-    |> put_view(module)
+    |> put_resp_header("location", location)
+    |> put_view(json: module)
     |> render(view, assigns)
-  end
-
-  # Returns a custom bad request response with status 400
-  def call(conn, {:error, message}) do
-    conn
-    |> put_status(:bad_request)
-    |> put_view(AppNameWeb.ErrorView)
-    |> render("error.json", %{message: message})
   end
 end

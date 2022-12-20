@@ -3,7 +3,7 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
 
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
-      conn = get(conn, Routes.user_registration_path(conn, :new))
+      conn = get(conn, ~p"/users/register")
       response = html_response(conn, 200)
       assert response =~ "Register"
       assert response =~ "Log in</a>"
@@ -11,7 +11,7 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
-      conn = conn |> log_in_user(insert(:user)) |> get(Routes.user_registration_path(conn, :new))
+      conn = conn |> log_in_user(insert(:user)) |> get(~p"/users/register")
       assert redirected_to(conn) == "/"
     end
   end
@@ -22,7 +22,7 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
       email = unique_user_email()
 
       conn =
-        post(conn, Routes.user_registration_path(conn, :create), %{
+        post(conn, ~p"/users/register", %{
           "user" => params_for(:user, email: email, password: valid_user_password())
         })
 
@@ -39,7 +39,7 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
 
     test "render errors for invalid data", %{conn: conn} do
       conn =
-        post(conn, Routes.user_registration_path(conn, :create), %{
+        post(conn, ~p"/users/register", %{
           "user" => %{"email" => "with spaces", "password" => "too short"}
         })
 

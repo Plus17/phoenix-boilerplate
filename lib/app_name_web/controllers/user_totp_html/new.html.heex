@@ -1,0 +1,25 @@
+<%= if @error_message do %>
+  <div class="alert alert-danger mt-0 mb-4">
+    <div><%= @error_message %></div>
+  </div>
+<% end %>
+
+<div class="text-center">
+  <h4>Two-factor authentication</h4>
+  <p class="mb-4">
+    Enter the six-digit code from your device or any of your eight-character backup codes to finish logging in.
+  </p>
+</div>
+
+<.simple_form :let={f} for={:user} action={~p"/users/totp"} as={:user} method="POST" id="user_otp">
+  <.input field={{f, :code}} type="text" label="code" required />
+
+  <:actions :let={f}>
+    <.input field={{f, :remember_me}} type="checkbox" label="Keep me logged in" />
+  </:actions>
+  <:actions>
+    <.button phx-disable-with="Sigining in..." class="w-full">
+      Verify code <span aria-hidden="true">→</span>
+    </.button>
+  </:actions>
+</.simple_form>

@@ -10,9 +10,9 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
 
   describe "GET /users/confirm" do
     test "renders the resend confirmation page", %{conn: conn} do
-      conn = get(conn, Routes.user_confirmation_path(conn, :new))
+      conn = get(conn, ~p"/users/confirm")
       response = html_response(conn, 200)
-      assert response =~ "<h1>Resend confirmation instructions</h1>"
+      assert response =~ "Resend confirmation instructions"
     end
   end
 
@@ -20,12 +20,12 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
     @tag :capture_log
     test "sends a new confirmation token", %{conn: conn, user: user} do
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, ~p"/users/confirm", %{
           "user" => %{"email" => user.email}
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       assert Repo.get_by!(Users.UserToken, user_id: user.id).context == "confirm"
     end
 
@@ -33,35 +33,35 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
       Repo.update!(Users.User.confirm_changeset(user))
 
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, ~p"/users/confirm", %{
           "user" => %{"email" => user.email}
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       refute Repo.get_by(Users.UserToken, user_id: user.id)
     end
 
     test "does not send confirmation token if email is invalid", %{conn: conn} do
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, ~p"/users/confirm", %{
           "user" => %{"email" => "unknown@example.com"}
         })
 
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "If your email is in our system"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
       assert Repo.all(Users.UserToken) == []
     end
   end
 
   describe "GET /users/confirm/:token" do
     test "renders the confirmation page", %{conn: conn} do
-      conn = get(conn, Routes.user_confirmation_path(conn, :edit, "some-token"))
+      token_path = ~p"/users/confirm/some-token"
+      conn = get(conn, token_path)
       response = html_response(conn, 200)
-      assert response =~ "<h1>Confirm account</h1>"
+      assert response =~ "Confirm account"
 
-      form_action = Routes.user_confirmation_path(conn, :update, "some-token")
-      assert response =~ "action=\"#{form_action}\""
+      assert response =~ "action=\"#{token_path}\""
     end
   end
 
@@ -72,32 +72,40 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
           Users.deliver_user_confirmation_instructions(user, url)
         end)
 
-      conn = put(conn, Routes.user_confirmation_path(conn, :update, token))
-      assert redirected_to(conn) == "/"
-      assert get_flash(conn, :info) =~ "User confirmed successfully"
+      conn = post(conn, ~p"/users/confirm/#{token}")
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "User confirmed successfully"
+
       assert Users.get_user!(user.id).confirmed_at
       refute get_session(conn, :user_token)
       assert Repo.all(Users.UserToken) == []
 
       # When not logged in
-      conn = put(conn, Routes.user_confirmation_path(conn, :update, token))
-      assert redirected_to(conn) == "/"
-      assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
+      conn = post(conn, ~p"/users/confirm/#{token}")
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+               "User confirmation link is invalid or it has expired"
 
       # When logged in
       conn =
         build_conn()
         |> log_in_user(user)
-        |> put(Routes.user_confirmation_path(conn, :update, token))
+        |> post(~p"/users/confirm/#{token}")
 
-      assert redirected_to(conn) == "/"
-      refute get_flash(conn, :error)
+      assert redirected_to(conn) == ~p"/"
+      refute Phoenix.Flash.get(conn.assigns.flash, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
-      conn = put(conn, Routes.user_confirmation_path(conn, :update, "oops"))
+      conn = post(conn, ~p"/users/confirm/oops")
       assert redirected_to(conn) == "/"
-      assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+               "User confirmation link is invalid or it has expired"
+
       refute Users.get_user!(user.id).confirmed_at
     end
   end

@@ -4,14 +4,14 @@ defmodule AppNameWeb.UserConfirmationController do
   alias AppName.Contexts.Users
 
   def new(conn, _params) do
-    render(conn, "new.html")
+    render(conn, :new)
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Users.get_user_by_email(email) do
       Users.deliver_user_confirmation_instructions(
         user,
-        &Routes.user_confirmation_url(conn, :edit, &1)
+        &url(~p"/users/confirm/#{&1}")
       )
     end
 
@@ -21,11 +21,11 @@ defmodule AppNameWeb.UserConfirmationController do
       "If your email is in our system and it has not been confirmed yet, " <>
         "you will receive an email with instructions shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: ~p"/")
   end
 
   def edit(conn, %{"token" => token}) do
-    render(conn, "edit.html", token: token)
+    render(conn, :edit, token: token)
   end
 
   # Do not log in the user after confirmation to avoid a
@@ -35,7 +35,7 @@ defmodule AppNameWeb.UserConfirmationController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "User confirmed successfully.")
-        |> redirect(to: "/")
+        |> redirect(to: ~p"/")
 
       :error ->
         # If there is a current user and the account was already confirmed,
@@ -44,12 +44,12 @@ defmodule AppNameWeb.UserConfirmationController do
         # a warning message.
         case conn.assigns do
           %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
-            redirect(conn, to: "/")
+            redirect(conn, to: ~p"/")
 
           %{} ->
             conn
             |> put_flash(:error, "User confirmation link is invalid or it has expired.")
-            |> redirect(to: "/")
+            |> redirect(to: ~p"/")
         end
     end
   end

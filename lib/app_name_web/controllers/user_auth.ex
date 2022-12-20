@@ -1,10 +1,10 @@
 defmodule AppNameWeb.UserAuth do
+  use AppNameWeb, :verified_routes
+
   import Plug.Conn
   import Phoenix.Controller
 
   alias AppName.Contexts.Users
-  # credo:disable-for-next-line
-  alias AppNameWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -147,13 +147,13 @@ defmodule AppNameWeb.UserAuth do
         conn
         |> put_flash(:error, "You must log in to access this page.")
         |> maybe_store_user_return_to()
-        |> redirect(to: Routes.user_session_path(conn, :new))
+        |> redirect(to: ~p"/users/log_in")
         |> halt()
 
       get_session(conn, :user_totp_pending) && conn.path_info != ["users", "totp"] &&
           conn.path_info != ["users", "logout"] ->
         conn
-        |> redirect(to: Routes.user_totp_path(conn, :new))
+        |> redirect(to: ~p"/users/totp")
         |> halt()
 
       true ->

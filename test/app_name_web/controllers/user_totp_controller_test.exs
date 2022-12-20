@@ -9,7 +9,7 @@ defmodule AppNameWeb.UserTOTPControllerTest do
         conn
         |> log_in_user(user)
         |> put_session(:user_totp_pending, true)
-        |> get(Routes.user_totp_path(conn, :new))
+        |> get(~p"/users/totp")
         |> html_response(200)
 
       assert response =~ "Enter the six-digit code from your device"
@@ -24,11 +24,11 @@ defmodule AppNameWeb.UserTOTPControllerTest do
         conn
         |> log_in_user(user)
         |> put_session(:user_totp_pending, true)
-        |> get(Routes.user_totp_path(conn, :new))
+        |> get(~p"/users/totp")
 
       response =
         get_conn
-        |> post(Routes.user_totp_path(conn, :create), user: %{"code" => "12345"})
+        |> post(~p"/users/totp", user: %{"code" => "12345"})
         |> html_response(200)
 
       assert response =~ "Invalid two-factor authentication code"
@@ -41,16 +41,15 @@ defmodule AppNameWeb.UserTOTPControllerTest do
         conn
         |> log_in_user(user)
         |> put_session(:user_totp_pending, true)
-        |> get(Routes.user_totp_path(conn, :new))
+        |> get(~p"/users/totp")
 
       valid_code = NimbleTOTP.verification_code(user.totp_secret)
 
-      response =
-        post(get_conn, Routes.user_totp_path(conn, :create), user: %{"code" => valid_code})
+      response = post(get_conn, ~p"/users/totp", user: %{"code" => valid_code})
 
-      assert redirected_to(response) == Routes.page_path(conn, :index)
+      assert redirected_to(response) == ~p"/"
 
-      conn = get(recycle(response), Routes.page_path(conn, :index))
+      conn = get(recycle(response), ~p"/")
       assert html_response(conn, 200) =~ user.email
     end
   end

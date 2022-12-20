@@ -29,6 +29,8 @@ defmodule AppNameWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint AppNameWeb.Endpoint
+
+      use AppNameWeb, :verified_routes
     end
   end
 

@@ -7,7 +7,7 @@ defmodule AppNameWeb.UserRegistrationController do
 
   def new(conn, _params) do
     changeset = Users.change_user_registration(%User{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -16,7 +16,7 @@ defmodule AppNameWeb.UserRegistrationController do
         {:ok, _} =
           Users.deliver_user_confirmation_instructions(
             user,
-            &Routes.user_confirmation_url(conn, :edit, &1)
+            &url(~p"/users/confirm/#{&1}")
           )
 
         conn
@@ -25,7 +25,7 @@ defmodule AppNameWeb.UserRegistrationController do
         |> UserAuth.redirect_user_after_login_with_remember_me()
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, :new, changeset: changeset)
     end
   end
 end

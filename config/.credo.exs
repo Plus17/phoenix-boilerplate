@@ -36,6 +36,7 @@
           ~r"/deps/",
           ~r"/node_modules/",
           ~r"/test/support/",
+          ~r"/lib/app_name_web/",
           "lib/app_name_web.ex",
           "lib/app_name_web/telemetry.ex",
           "lib/app_name/release.ex",

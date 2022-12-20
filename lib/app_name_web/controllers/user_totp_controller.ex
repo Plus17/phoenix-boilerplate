@@ -6,7 +6,7 @@ defmodule AppNameWeb.UserTOTPController do
   alias AppNameWeb.UserAuth
 
   def new(conn, _params) do
-    render(conn, "new.html", error_message: nil)
+    render(conn, :new, error_message: nil)
   end
 
   def create(conn, %{"user" => %{"code" => code} = user_params}) do
@@ -17,7 +17,7 @@ defmodule AppNameWeb.UserTOTPController do
       |> delete_session(:user_totp_pending)
       |> UserAuth.redirect_user_after_login_with_remember_me(user_params)
     else
-      render(conn, "new.html", error_message: "Invalid two-factor authentication code")
+      render(conn, :new, error_message: "Invalid two-factor authentication code")
     end
   end
 
@@ -26,7 +26,7 @@ defmodule AppNameWeb.UserTOTPController do
       conn
     else
       conn
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> redirect(to: ~p"/")
       |> halt()
     end
   end

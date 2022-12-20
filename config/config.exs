@@ -13,7 +13,10 @@ config :app_name,
 
 # Configures the endpoint
 config :app_name, AppNameWeb.Endpoint,
-  render_errors: [view: AppNameWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: AppNameWeb.ErrorHTML, json: AppNameWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: AppName.PubSub,
   live_view: [signing_salt: "ePqBlGTf"]
 

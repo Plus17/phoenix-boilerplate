@@ -6,7 +6,7 @@ defmodule AppNameWeb do
   This can be used in your application as:
 
       use AppNameWeb, :controller
-      use AppNameWeb, :view
+
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -17,13 +17,21 @@ defmodule AppNameWeb do
   and import those modules here.
   """
 
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+
   def controller do
     quote do
-      use Phoenix.Controller, namespace: AppNameWeb
+      use Phoenix.Controller,
+        namespace: AppNameWeb,
+        formats: [:html, :json],
+        layouts: [html: AppNameWeb.Layouts]
 
       import Plug.Conn
       import AppNameWeb.Gettext
+
       alias AppNameWeb.Router.Helpers, as: Routes
+
+      unquote(verified_routes())
     end
   end
 
@@ -35,7 +43,7 @@ defmodule AppNameWeb do
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
-        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
+        only: [view_module: 1, view_template: 1]
 
       import Phoenix.Component
 
@@ -47,9 +55,9 @@ defmodule AppNameWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {AppNameWeb.LayoutView, :live}
+        layout: {AppNameWeb.Layouts, :live}
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -57,7 +65,7 @@ defmodule AppNameWeb do
     quote do
       use Phoenix.LiveComponent
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -65,7 +73,7 @@ defmodule AppNameWeb do
     quote do
       use Phoenix.Component
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -87,13 +95,44 @@ defmodule AppNameWeb do
     end
   end
 
+  def html do
+    quote do
+      use Phoenix.Component
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller,
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
+
+      # Include general helpers for rendering HTML
+      unquote(html_helpers())
+    end
+  end
+
+  defp html_helpers do
+    quote do
+      # HTML escaping functionality
+      import Phoenix.HTML
+      # Core UI components and translation
+      import AppNameWeb.CoreComponents
+      import AppNameWeb.Gettext
+
+      # Shortcut for generating JS commands
+      alias Phoenix.LiveView.JS
+
+      alias AppNameWeb.Router.Helpers, as: Routes
+
+      # Routes generation with the ~p sigil
+      unquote(verified_routes())
+    end
+  end
+
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
-      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
@@ -101,6 +140,17 @@ defmodule AppNameWeb do
       import AppNameWeb.ErrorHelpers
       import AppNameWeb.Gettext
       alias AppNameWeb.Router.Helpers, as: Routes
+
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: AppNameWeb.Endpoint,
+        router: AppNameWeb.Router,
+        statics: AppNameWeb.static_paths()
     end
   end
 

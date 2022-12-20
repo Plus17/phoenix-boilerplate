@@ -13,7 +13,7 @@ defmodule AppNameWeb.UserSettingsTwoFactorController do
 
     conn
     |> put_session(:totp_secret, secret)
-    |> render("new.html", uri: uri)
+    |> render(:new, uri: uri)
   end
 
   def create(conn, %{"user" => %{"otp" => otp}}) do
@@ -24,13 +24,13 @@ defmodule AppNameWeb.UserSettingsTwoFactorController do
         conn
         |> delete_session(:totp_secret)
         |> put_flash(:info, "2FA activated successfully.")
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: ~p"/users/settings")
 
       {:error, :invalid_otp} ->
         conn
         |> delete_session(:totp_secret)
         |> put_flash(:error, "OTP code is invalid")
-        |> redirect(to: Routes.user_settings_two_factor_path(conn, :new))
+        |> redirect(to: ~p"/users/settings/two_factor_auth/new")
     end
   end
 
@@ -40,7 +40,7 @@ defmodule AppNameWeb.UserSettingsTwoFactorController do
         conn
         |> delete_session(:totp_secret)
         |> put_flash(:info, "2FA activated successfully.")
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
+        |> redirect(to: ~p"/users/settings")
     end
   end
 end

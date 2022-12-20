@@ -6,7 +6,7 @@ defmodule AppNameWeb.UserSessionController do
   alias AppNameWeb.UserAuth
 
   def new(conn, _params) do
-    render(conn, "new.html", error_message: nil)
+    render(conn, :new, error_message: nil)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -20,13 +20,13 @@ defmodule AppNameWeb.UserSessionController do
 
         conn
         |> put_session(:user_totp_pending, true)
-        |> redirect(to: Routes.user_totp_path(conn, :new, user: totp_params))
+        |> redirect(to: url(~p"/users/totp?user=#{[user: totp_params]}"))
       else
         UserAuth.redirect_user_after_login_with_remember_me(conn, user_params)
       end
     else
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
-      render(conn, "new.html", error_message: "Invalid email or password")
+      render(conn, :new, error_message: "Invalid email or password")
     end
   end
 

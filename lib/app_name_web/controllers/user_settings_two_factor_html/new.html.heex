@@ -1,0 +1,37 @@
+<div class="container md-auto px-6">
+  <div class="columns-1">
+    <div class="py-5">
+      <h2 class="text-xl">Two-factor authentication</h2>
+    </div>
+
+    <div class="py-10">
+      <p>
+        To enable two-factor authentication, scan the image below with the two-factor authentication app
+        in your phone and then enter the authentication code at the bottom. If you can't use QR code, enter
+        your secret manually.
+      </p>
+    </div>
+
+    <div class="py-10">
+      <%= generate_qrcode(@uri) %>
+    </div>
+
+    <div class="form-control w-full max-w-xs text-center py-10">
+      <.simple_form
+        :let={f}
+        for={:user}
+        action={~p"/users/settings/two_factor_auth"}
+        method="POST"
+        id="setup_totp"
+      >
+        <.input field={{f, :otp}} type="text" label="otp" required />
+
+        <:actions>
+          <.button phx-disable-with="Sigining in..." class="w-full">
+            Verify code <span aria-hidden="true">→</span>
+          </.button>
+        </:actions>
+      </.simple_form>
+    </div>
+  </div>
+</div>

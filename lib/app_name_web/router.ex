@@ -7,7 +7,8 @@ defmodule AppNameWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {AppNameWeb.LayoutView, :root}
+    plug :fetch_flash
+    plug :put_root_layout, {AppNameWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
@@ -20,7 +21,7 @@ defmodule AppNameWeb.Router do
   scope "/", AppNameWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
@@ -58,40 +59,43 @@ defmodule AppNameWeb.Router do
 
   ## Authentication routes
 
-  scope "/users", AppNameWeb do
+  scope "/", AppNameWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    resources "/register", UserRegistrationController, only: [:new, :create]
-    resources "/log_in", UserSessionController, only: [:new, :create]
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
 
-    resources "/reset_password", UserResetPasswordController,
-      only: [:new, :create, :edit, :update],
-      param: "token"
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
-  scope "/users", AppNameWeb do
+  scope "/", AppNameWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    resources "/settings", UserSettingsController, only: [:edit, :update], singleton: true
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
-    get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
-
-    resources "/settings/two_factor_auth", UserSettingsTwoFactorController,
+    resources "/users/settings/two_factor_auth", UserSettingsTwoFactorController,
       only: [:new, :create, :delete],
       singleton: true
 
-    get "/totp", UserTOTPController, :new
-    post "/totp", UserTOTPController, :create
+    get "/users/totp", UserTOTPController, :new
+    post "/users/totp", UserTOTPController, :create
   end
 
-  scope "/users", AppNameWeb do
+  scope "/", AppNameWeb do
     pipe_through [:browser]
 
-    delete "/log_out", UserSessionController, :delete
-
-    resources "/confirm", UserConfirmationController,
-      only: [:new, :create, :edit, :update],
-      param: "token"
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 
   scope "/health", log: false do
