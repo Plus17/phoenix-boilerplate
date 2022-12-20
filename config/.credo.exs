@@ -114,7 +114,7 @@
            files: %{
              excluded: [
                "lib/app_name_web/controllers/user_auth.ex",
-               "lib/app_name/contexts/users/user_notifier.ex"
+               "lib/app_name/contexts/accounts/user_notifier.ex"
              ]
            }
          ]},
@@ -200,10 +200,10 @@
                ~r"/lib/app_name_web/views/",
                ~r"/lib/app_name_web/controllers/",
                ~r"/test/factories",
-               "lib/app_name/contexts/users/user.ex",
-               "lib/app_name/contexts/users/user_notifier.ex",
+               "lib/app_name/contexts/accounts/user.ex",
+               "lib/app_name/contexts/accounts/user_notifier.ex",
                "lib/app_name/contexts/accounts.ex",
-               "lib/app_name/contexts/users/user_token.ex",
+               "lib/app_name/contexts/accounts/user_token.ex",
                "lib/release.ex"
              ]
            }
@@ -240,7 +240,7 @@
            files: %{
              excluded: [
                # exclude mix phx.gen.auth generated files
-               "test/app_name/contexts/users_test.exs",
+               "test/app_name/contexts/accounts_test.exs",
                "test/app_name_web/controllers/user_settings_controller_test.exs",
                "test/app_name_web/controllers/user_session_controller_test.exs",
                "test/app_name_web/controllers/user_registration_controller_test.exs",
