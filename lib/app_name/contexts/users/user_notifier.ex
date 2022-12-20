@@ -1,4 +1,4 @@
-defmodule AppName.Contexts.Users.UserNotifier do
+defmodule AppName.Contexts.Accounts.UserNotifier do
   import Swoosh.Email
 
   alias AppName.Mailer

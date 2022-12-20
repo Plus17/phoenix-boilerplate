@@ -181,7 +181,7 @@
          [
            files: %{
              excluded: [
-               "lib/app_name/contexts/users.ex",
+               "lib/app_name/contexts/accounts.ex",
                "lib/release.ex"
              ]
            }
@@ -202,7 +202,7 @@
                ~r"/test/factories",
                "lib/app_name/contexts/users/user.ex",
                "lib/app_name/contexts/users/user_notifier.ex",
-               "lib/app_name/contexts/users.ex",
+               "lib/app_name/contexts/accounts.ex",
                "lib/app_name/contexts/users/user_token.ex",
                "lib/release.ex"
              ]

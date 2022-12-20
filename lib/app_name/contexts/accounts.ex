@@ -1,4 +1,4 @@
-defmodule AppName.Contexts.Users do
+defmodule AppName.Contexts.Accounts do
   @moduledoc """
   The Contexts.Users context.
   """
@@ -6,9 +6,9 @@ defmodule AppName.Contexts.Users do
   import Ecto.Query, warn: false
   alias AppName.Repo
 
-  alias AppName.Contexts.Users.User
-  alias AppName.Contexts.Users.UserNotifier
-  alias AppName.Contexts.Users.UserToken
+  alias AppName.Contexts.Accounts.User
+  alias AppName.Contexts.Accounts.UserNotifier
+  alias AppName.Contexts.Accounts.UserToken
 
   ## Database getters
 

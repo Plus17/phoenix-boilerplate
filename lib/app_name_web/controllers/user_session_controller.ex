@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserSessionController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Users
+  alias AppName.Contexts.Accounts
 
   alias AppNameWeb.UserAuth
 
@@ -12,7 +12,7 @@ defmodule AppNameWeb.UserSessionController do
   def create(conn, %{"user" => user_params}) do
     %{"email" => email, "password" => password} = user_params
 
-    if user = Users.get_user_by_email_and_password(email, password) do
+    if user = Accounts.get_user_by_email_and_password(email, password) do
       conn = UserAuth.log_in_user(conn, user)
 
       if user.settings.has_2fa do

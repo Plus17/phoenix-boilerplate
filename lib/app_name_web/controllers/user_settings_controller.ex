@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserSettingsController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Users
+  alias AppName.Contexts.Accounts
   alias AppNameWeb.UserAuth
 
   plug :assign_email_and_password_changesets
@@ -14,9 +14,9 @@ defmodule AppNameWeb.UserSettingsController do
     %{"current_password" => password, "user" => user_params} = params
     user = conn.assigns.current_user
 
-    case Users.apply_user_email(user, password, user_params) do
+    case Accounts.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
-        Users.deliver_update_email_instructions(
+        Accounts.deliver_update_email_instructions(
           applied_user,
           user.email,
           &url(~p"/users/settings/confirm_email/#{&1}")
@@ -38,7 +38,7 @@ defmodule AppNameWeb.UserSettingsController do
     %{"current_password" => password, "user" => user_params} = params
     user = conn.assigns.current_user
 
-    case Users.update_user_password(user, password, user_params) do
+    case Accounts.update_user_password(user, password, user_params) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "Password updated successfully.")
@@ -52,7 +52,7 @@ defmodule AppNameWeb.UserSettingsController do
   end
 
   def confirm_email(conn, %{"token" => token}) do
-    case Users.update_user_email(conn.assigns.current_user, token) do
+    case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
         conn
         |> put_flash(:info, "Email changed successfully.")
@@ -69,7 +69,7 @@ defmodule AppNameWeb.UserSettingsController do
     user = conn.assigns.current_user
 
     conn
-    |> assign(:email_changeset, Users.change_user_email(user))
-    |> assign(:password_changeset, Users.change_user_password(user))
+    |> assign(:email_changeset, Accounts.change_user_email(user))
+    |> assign(:password_changeset, Accounts.change_user_password(user))
   end
 end

@@ -1,55 +1,55 @@
-defmodule AppName.Contexts.UsersTest do
+defmodule AppName.Contexts.AccountsTest do
   use AppName.DataCase
 
-  alias AppName.Contexts.Users
-  alias AppName.Contexts.Users.User
-  alias AppName.Contexts.Users.UserToken
+  alias AppName.Contexts.Accounts
+  alias AppName.Contexts.Accounts.User
+  alias AppName.Contexts.Accounts.UserToken
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
-      refute Users.get_user_by_email("unknown@example.com")
+      refute Accounts.get_user_by_email("unknown@example.com")
     end
 
     test "returns the user if the email exists" do
       %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Users.get_user_by_email(user.email)
+      assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
 
   describe "get_user_by_email_and_password/2" do
     test "does not return the user if the email does not exist" do
-      refute Users.get_user_by_email_and_password("unknown@example.com", "hello world!")
+      refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
     test "does not return the user if the password is not valid" do
       user = insert(:user)
-      refute Users.get_user_by_email_and_password(user.email, "invalid")
+      refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
       %{id: id} = user = insert(:user)
 
       assert %User{id: ^id} =
-               Users.get_user_by_email_and_password(user.email, valid_user_password())
+               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
   end
 
   describe "get_user!/1" do
     test "raises if id is invalid" do
       assert_raise Ecto.NoResultsError, fn ->
-        Users.get_user!("11111111-1111-1111-1111-111111111111")
+        Accounts.get_user!("11111111-1111-1111-1111-111111111111")
       end
     end
 
     test "returns the user with the given id" do
       %{id: id} = user = insert(:user)
-      assert %User{id: ^id} = Users.get_user!(user.id)
+      assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
 
   describe "register_user/1" do
     test "requires email and password to be set" do
-      {:error, changeset} = Users.register_user(%{})
+      {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
                password: ["can't be blank"],
@@ -58,7 +58,7 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Users.register_user(%{email: "not valid", password: "not valid"})
+      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -68,24 +68,24 @@ defmodule AppName.Contexts.UsersTest do
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Users.register_user(%{email: too_long, password: too_long})
+      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates email uniqueness" do
       %{email: email} = insert(:user)
-      {:error, changeset} = Users.register_user(%{email: email})
+      {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Users.register_user(%{email: String.upcase(email)})
+      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
       assert "has already been taken" in errors_on(changeset).email
     end
 
     test "registers users with a hashed password" do
       user_params = params_for(:user, password: valid_user_password())
-      {:ok, user} = Users.register_user(user_params)
+      {:ok, user} = Accounts.register_user(user_params)
       assert user.email == user_params.email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -95,7 +95,7 @@ defmodule AppName.Contexts.UsersTest do
 
   describe "change_user_registration/2" do
     test "returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Users.change_user_registration(%User{})
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email]
     end
 
@@ -104,7 +104,7 @@ defmodule AppName.Contexts.UsersTest do
       user_params = params_for(:user, password: password)
 
       changeset =
-        Users.change_user_registration(
+        Accounts.change_user_registration(
           %User{},
           user_params
         )
@@ -118,7 +118,7 @@ defmodule AppName.Contexts.UsersTest do
 
   describe "change_user_email/2" do
     test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Users.change_user_email(%User{})
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
       assert changeset.required == [:email]
     end
   end
@@ -129,13 +129,13 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "requires email to change", %{user: user} do
-      {:error, changeset} = Users.apply_user_email(user, valid_user_password(), %{})
+      {:error, changeset} = Accounts.apply_user_email(user, valid_user_password(), %{})
       assert %{email: ["did not change"]} = errors_on(changeset)
     end
 
     test "validates email", %{user: user} do
       {:error, changeset} =
-        Users.apply_user_email(user, valid_user_password(), %{email: "not valid"})
+        Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
 
       assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
     end
@@ -144,7 +144,7 @@ defmodule AppName.Contexts.UsersTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Users.apply_user_email(user, valid_user_password(), %{email: too_long})
+        Accounts.apply_user_email(user, valid_user_password(), %{email: too_long})
 
       assert "should be at most 160 character(s)" in errors_on(changeset).email
     end
@@ -152,22 +152,24 @@ defmodule AppName.Contexts.UsersTest do
     test "validates email uniqueness", %{user: user} do
       %{email: email} = insert(:user)
 
-      {:error, changeset} = Users.apply_user_email(user, valid_user_password(), %{email: email})
+      {:error, changeset} =
+        Accounts.apply_user_email(user, valid_user_password(), %{email: email})
 
       assert "has already been taken" in errors_on(changeset).email
     end
 
     test "validates current password", %{user: user} do
-      {:error, changeset} = Users.apply_user_email(user, "invalid", %{email: unique_user_email()})
+      {:error, changeset} =
+        Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
       assert %{current_password: ["is not valid"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
-      {:ok, user} = Users.apply_user_email(user, valid_user_password(), %{email: email})
+      {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
       assert user.email == email
-      assert Users.get_user!(user.id).email != email
+      assert Accounts.get_user!(user.id).email != email
     end
   end
 
@@ -179,7 +181,7 @@ defmodule AppName.Contexts.UsersTest do
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
-          Users.deliver_update_email_instructions(user, "current@example.com", url)
+          Accounts.deliver_update_email_instructions(user, "current@example.com", url)
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
@@ -197,14 +199,14 @@ defmodule AppName.Contexts.UsersTest do
 
       token =
         extract_user_token(fn url ->
-          Users.deliver_update_email_instructions(%{user | email: email}, user.email, url)
+          Accounts.deliver_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 
       %{user: user, token: token, email: email}
     end
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
-      assert Users.update_user_email(user, token) == :ok
+      assert Accounts.update_user_email(user, token) == :ok
       changed_user = Repo.get!(User, user.id)
       assert changed_user.email != user.email
       assert changed_user.email == email
@@ -214,20 +216,20 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "does not update email with invalid token", %{user: user} do
-      assert Users.update_user_email(user, "oops") == :error
+      assert Accounts.update_user_email(user, "oops") == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
-      assert Users.update_user_email(%{user | email: "current@example.com"}, token) == :error
+      assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Users.update_user_email(user, token) == :error
+      assert Accounts.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id).email == user.email
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -235,13 +237,13 @@ defmodule AppName.Contexts.UsersTest do
 
   describe "change_user_password/2" do
     test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Users.change_user_password(%User{})
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
       assert changeset.required == [:password]
     end
 
     test "allows fields to be set" do
       changeset =
-        Users.change_user_password(%User{}, %{
+        Accounts.change_user_password(%User{}, %{
           "password" => "new valid password"
         })
 
@@ -258,7 +260,7 @@ defmodule AppName.Contexts.UsersTest do
 
     test "validates password", %{user: user} do
       {:error, changeset} =
-        Users.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, valid_user_password(), %{
           password: "not valid",
           password_confirmation: "another"
         })
@@ -273,33 +275,33 @@ defmodule AppName.Contexts.UsersTest do
       too_long = String.duplicate("db", 100)
 
       {:error, changeset} =
-        Users.update_user_password(user, valid_user_password(), %{password: too_long})
+        Accounts.update_user_password(user, valid_user_password(), %{password: too_long})
 
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "validates current password", %{user: user} do
       {:error, changeset} =
-        Users.update_user_password(user, "invalid", %{password: valid_user_password()})
+        Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
 
       assert %{current_password: ["is not valid"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
       {:ok, user} =
-        Users.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, valid_user_password(), %{
           password: "new valid password"
         })
 
       assert is_nil(user.password)
-      assert Users.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _user_token = Users.generate_user_session_token(user)
+      _user_token = Accounts.generate_user_session_token(user)
 
       {:ok, _} =
-        Users.update_user_password(user, valid_user_password(), %{
+        Accounts.update_user_password(user, valid_user_password(), %{
           password: "new valid password"
         })
 
@@ -313,7 +315,7 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "generates a token", %{user: user} do
-      token = Users.generate_user_session_token(user)
+      token = Accounts.generate_user_session_token(user)
       assert user_token = Repo.get_by(UserToken, token: token)
       assert user_token.context == "session"
 
@@ -331,31 +333,31 @@ defmodule AppName.Contexts.UsersTest do
   describe "get_user_by_session_token/1" do
     setup do
       user = insert(:user)
-      token = Users.generate_user_session_token(user)
+      token = Accounts.generate_user_session_token(user)
       %{user: user, token: token}
     end
 
     test "returns user by token", %{user: user, token: token} do
-      assert session_user = Users.get_user_by_session_token(token)
+      assert session_user = Accounts.get_user_by_session_token(token)
       assert session_user.id == user.id
     end
 
     test "does not return user for invalid token" do
-      refute Users.get_user_by_session_token("oops")
+      refute Accounts.get_user_by_session_token("oops")
     end
 
     test "does not return user for expired token", %{token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Users.get_user_by_session_token(token)
+      refute Accounts.get_user_by_session_token(token)
     end
   end
 
   describe "delete_session_token/1" do
     test "deletes the token" do
       user = insert(:user)
-      token = Users.generate_user_session_token(user)
-      assert Users.delete_session_token(token) == :ok
-      refute Users.get_user_by_session_token(token)
+      token = Accounts.generate_user_session_token(user)
+      assert Accounts.delete_session_token(token) == :ok
+      refute Accounts.get_user_by_session_token(token)
     end
   end
 
@@ -367,7 +369,7 @@ defmodule AppName.Contexts.UsersTest do
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_confirmation_instructions(user, url)
+          Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
@@ -384,14 +386,14 @@ defmodule AppName.Contexts.UsersTest do
 
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_confirmation_instructions(user, url)
+          Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
       %{user: user, token: token}
     end
 
     test "confirms the email with a valid token", %{user: user, token: token} do
-      assert {:ok, confirmed_user} = Users.confirm_user(token)
+      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
       assert confirmed_user.confirmed_at
       assert confirmed_user.confirmed_at != user.confirmed_at
       assert Repo.get!(User, user.id).confirmed_at
@@ -399,14 +401,14 @@ defmodule AppName.Contexts.UsersTest do
     end
 
     test "does not confirm with invalid token", %{user: user} do
-      assert Users.confirm_user("oops") == :error
+      assert Accounts.confirm_user("oops") == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Users.confirm_user(token) == :error
+      assert Accounts.confirm_user(token) == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
@@ -420,7 +422,7 @@ defmodule AppName.Contexts.UsersTest do
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
@@ -437,25 +439,25 @@ defmodule AppName.Contexts.UsersTest do
 
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
       %{user: user, token: token}
     end
 
     test "returns the user with valid token", %{user: %{id: id}, token: token} do
-      assert %User{id: ^id} = Users.get_user_by_reset_password_token(token)
+      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token)
       assert Repo.get_by(UserToken, user_id: id)
     end
 
     test "does not return the user with invalid token", %{user: user} do
-      refute Users.get_user_by_reset_password_token("oops")
+      refute Accounts.get_user_by_reset_password_token("oops")
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not return the user if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Users.get_user_by_reset_password_token(token)
+      refute Accounts.get_user_by_reset_password_token(token)
       assert Repo.get_by(UserToken, user_id: user.id)
     end
   end
@@ -467,7 +469,7 @@ defmodule AppName.Contexts.UsersTest do
 
     test "validates password", %{user: user} do
       {:error, changeset} =
-        Users.reset_user_password(user, %{
+        Accounts.reset_user_password(user, %{
           password: "not valid",
           password_confirmation: "another"
         })
@@ -480,19 +482,19 @@ defmodule AppName.Contexts.UsersTest do
 
     test "validates maximum values for password for security", %{user: user} do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Users.reset_user_password(user, %{password: too_long})
+      {:error, changeset} = Accounts.reset_user_password(user, %{password: too_long})
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = Users.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
       assert is_nil(updated_user.password)
-      assert Users.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
 
     test "deletes all tokens for the given user", %{user: user} do
-      _user_token = Users.generate_user_session_token(user)
-      {:ok, _} = Users.reset_user_password(user, %{password: "new valid password"})
+      _user_token = Accounts.generate_user_session_token(user)
+      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
   end
@@ -511,7 +513,7 @@ defmodule AppName.Contexts.UsersTest do
         <<133, 116, 106, 186, 116, 16, 44, 124, 238, 47, 44, 148, 28, 254, 16, 246, 138, 197, 183,
           77>>
 
-      {:ok, updated_user} = Users.setup_two_factor(user, secret)
+      {:ok, updated_user} = Accounts.setup_two_factor(user, secret)
 
       assert updated_user.totp_secret == secret
       assert updated_user.settings.has_2fa
@@ -529,7 +531,7 @@ defmodule AppName.Contexts.UsersTest do
       assert user.totp_secret == secret
       assert user.settings.has_2fa
 
-      {:ok, updated_user} = Users.deactivate_two_factor(user)
+      {:ok, updated_user} = Accounts.deactivate_two_factor(user)
 
       assert updated_user.totp_secret == nil
       refute updated_user.settings.has_2fa

@@ -1,15 +1,15 @@
 defmodule AppNameWeb.UserConfirmationController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Users
+  alias AppName.Contexts.Accounts
 
   def new(conn, _params) do
     render(conn, :new)
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
-    if user = Users.get_user_by_email(email) do
-      Users.deliver_user_confirmation_instructions(
+    if user = Accounts.get_user_by_email(email) do
+      Accounts.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")
       )
@@ -31,7 +31,7 @@ defmodule AppNameWeb.UserConfirmationController do
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
   def update(conn, %{"token" => token}) do
-    case Users.confirm_user(token) do
+    case Accounts.confirm_user(token) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "User confirmed successfully.")

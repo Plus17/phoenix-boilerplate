@@ -3,7 +3,7 @@ defmodule AppName.UserFactory do
   User factory to populate test data
   """
 
-  alias AppName.Contexts.Users.User
+  alias AppName.Contexts.Accounts.User
 
   alias AppName.Schemas.Users.Settings
 

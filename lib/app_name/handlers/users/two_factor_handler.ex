@@ -5,9 +5,9 @@ defmodule AppName.Handlers.Users.TwoFactorHander do
 
   require Logger
 
-  alias AppName.Contexts.Users.User
+  alias AppName.Contexts.Accounts.User
 
-  alias AppName.Contexts.Users
+  alias AppName.Contexts.Accounts
 
   @doc """
   Verify cod and save secret
@@ -17,7 +17,7 @@ defmodule AppName.Handlers.Users.TwoFactorHander do
     Logger.debug("[TwoFactorHander.setup/3] Validating secret: #{secret}, otp: #{otp}")
 
     with {:ok, :valid} <- validate_otp(secret, otp),
-         {:ok, user} <- Users.setup_two_factor(user, secret) do
+         {:ok, user} <- Accounts.setup_two_factor(user, secret) do
       Logger.info("[TwoFactorHander] Success 2FA setup for user #{user.id}")
       {:ok, :success}
     end
@@ -40,6 +40,6 @@ defmodule AppName.Handlers.Users.TwoFactorHander do
   @spec deactivate(User.t()) :: {:ok, User.t()}
   def deactivate(%User{} = user) do
     Logger.debug("[TwoFactorHander.deactivate/1] Deactivating two factor for user #{user.id}")
-    Users.deactivate_two_factor(user)
+    Accounts.deactivate_two_factor(user)
   end
 end

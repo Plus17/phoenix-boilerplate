@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserResetPasswordControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  alias AppName.Contexts.Users
+  alias AppName.Contexts.Accounts
   alias AppName.Repo
 
   setup do
@@ -26,7 +26,7 @@ defmodule AppNameWeb.UserResetPasswordControllerTest do
 
       assert redirected_to(conn) == "/"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
-      assert Repo.get_by!(Users.UserToken, user_id: user.id).context == "reset_password"
+      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "reset_password"
     end
 
     test "does not send reset password token if email is invalid", %{conn: conn} do
@@ -37,7 +37,7 @@ defmodule AppNameWeb.UserResetPasswordControllerTest do
 
       assert redirected_to(conn) == "/"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
-      assert Repo.all(Users.UserToken) == []
+      assert Repo.all(Accounts.UserToken) == []
     end
   end
 
@@ -45,7 +45,7 @@ defmodule AppNameWeb.UserResetPasswordControllerTest do
     setup %{user: user} do
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
       %{token: token}
@@ -69,7 +69,7 @@ defmodule AppNameWeb.UserResetPasswordControllerTest do
     setup %{user: user} do
       token =
         extract_user_token(fn url ->
-          Users.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
       %{token: token}
@@ -87,7 +87,7 @@ defmodule AppNameWeb.UserResetPasswordControllerTest do
       assert redirected_to(conn) == ~p"/users/log_in"
       refute get_session(conn, :user_token)
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Password reset successfully"
-      assert Users.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
 
     test "does not reset password on invalid data", %{conn: conn, token: token} do

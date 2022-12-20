@@ -1,4 +1,4 @@
-defmodule AppName.Contexts.Users.User do
+defmodule AppName.Contexts.Accounts.User do
   @moduledoc """
   User schema
   """
@@ -141,7 +141,7 @@ defmodule AppName.Contexts.Users.User do
   If there is no user or the user doesn't have a password, we call
   `Argon2.no_user_verify/0` to avoid timing attacks.
   """
-  def valid_password?(%AppName.Contexts.Users.User{hashed_password: hashed_password}, password)
+  def valid_password?(%AppName.Contexts.Accounts.User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Argon2.verify_pass(password, hashed_password)
   end

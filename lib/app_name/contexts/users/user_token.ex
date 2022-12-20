@@ -1,9 +1,9 @@
-defmodule AppName.Contexts.Users.UserToken do
+defmodule AppName.Contexts.Accounts.UserToken do
   @moduledoc false
 
   use Ecto.Schema
   import Ecto.Query
-  alias AppName.Contexts.Users.UserToken
+  alias AppName.Contexts.Accounts.UserToken
 
   @hash_algorithm :sha256
   @rand_size 32
@@ -21,7 +21,7 @@ defmodule AppName.Contexts.Users.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, AppName.Contexts.Users.User
+    belongs_to :user, AppName.Contexts.Accounts.User
 
     timestamps(updated_at: false)
   end

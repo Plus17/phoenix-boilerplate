@@ -59,7 +59,7 @@ defmodule AppNameWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = AppName.Contexts.Users.generate_user_session_token(user)
+    token = AppName.Contexts.Accounts.generate_user_session_token(user)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
