@@ -7,7 +7,7 @@ volumes:
 
 services:
   phx:
-    image: plus17/phoenix-alpine:1.14.0-1.7.0-rc.0
+    image: plus17/phoenix-alpine:1.14.3-1.7.0-24.0.2-3.15.0
     ports:
       - ${HTTP_PORT:-4000}:${HTTP_PORT:-4000}
     volumes:
