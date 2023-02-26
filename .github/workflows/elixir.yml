@@ -95,4 +95,4 @@ jobs:
     # Runs credo in strict mode
     # Execute the tests.
     - name: Run ci verifications
-      run: mix ci
+      run: mix CI
