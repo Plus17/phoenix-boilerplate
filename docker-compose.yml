@@ -22,7 +22,7 @@ services:
     working_dir: /app/src
 
   postgres:
-    image: postgres:11
+    image: postgres:12
     ports:
       - ${DATABASE_EXTERNAL_PORT:-5432}:5432
     environment:
