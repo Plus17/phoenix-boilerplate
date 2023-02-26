@@ -1,62 +1,91 @@
-ARG MIX_ENV="prod"
+# Find eligible builder and runner images on Docker Hub. We use Ubuntu/Debian
+# instead of Alpine to avoid DNS resolution issues in production.
+#
+# https://hub.docker.com/r/hexpm/elixir/tags?page=1&name=ubuntu
+# https://hub.docker.com/_/ubuntu?tab=tags
+#
+# This file is based on these images:
+#
+#   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
+#   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20210902-slim - for the release image
+#   - https://pkgs.org/ - resource for finding needed packages
+#   - Ex: hexpm/elixir:1.14.3-erlang-24.0.2-debian-bullseye-20210902-slim
+#
+ARG ELIXIR_VERSION=1.14.3
+ARG OTP_VERSION=24.3.4.9
+ARG DEBIAN_VERSION=bullseye-20230202-slim
 
-# build stage
-FROM plus17/phoenix-alpine:1.13.4-1.6.6 AS build
+ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
+ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 
-# sets work dir
+FROM ${BUILDER_IMAGE} as builder
+
+# install build dependencies
+RUN apt-get update -y && apt-get install -y build-essential git nodejs \
+    && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+# prepare build dir
 WORKDIR /app
 
 # install hex + rebar
 RUN mix local.hex --force && \
-  mix local.rebar --force
+    mix local.rebar --force
 
-ARG MIX_ENV
-ENV MIX_ENV="${MIX_ENV}"
-
-COPY assets/package.json assets/package-lock.json ./assets/
-RUN cd assets && npm ci
+# set build ENV
+ENV MIX_ENV="prod"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
 RUN mix deps.get --only $MIX_ENV
-
-# copy compile configuration files
 RUN mkdir config
-COPY config/config.exs config/$MIX_ENV.exs config/
 
-# compile dependencies
+# copy compile-time config files before we compile dependencies
+# to ensure any relevant config change will trigger the dependencies
+# to be re-compiled.
+COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
 
-# copy assets
 COPY priv priv
+
+COPY lib lib
+
 COPY assets assets
 
-# Compile assets
+# compile assets
 RUN mix assets.deploy
 
-# compile project
-COPY lib lib
+# Compile the release
 RUN mix compile
 
-# copy runtime configuration file
+# Changes to config/runtime.exs don't require recompiling the code
 COPY config/runtime.exs config/
 
-# assemble release
+COPY rel rel
 RUN mix release
 
-# app stage
-FROM alpine:3.15 AS app
+# start a new build stage so that the final image will only contain
+# the compiled release and other runtime necessities
+FROM ${RUNNER_IMAGE}
 
-ENV REPLACE_OS_VARS=true
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
+  && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
-ARG MIX_ENV
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-# install runtime dependencies
-RUN apk add --no-cache libstdc++ openssl ncurses-libs
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
-WORKDIR "/home/app"
+WORKDIR "/app"
+RUN chown nobody /app
 
-# copy release executables
-COPY --from=0 /app/_build/"${MIX_ENV}"/rel/app_name ./
+# set runner ENV
+ENV MIX_ENV="prod"
 
-CMD PORT=$PORT exec bin/app_name start
+# Only copy the final release from the build stage
+COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/app_name ./
+
+USER nobody
+
+CMD ["/app/bin/server"]
