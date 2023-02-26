@@ -2,7 +2,11 @@ import Config
 
 # Configure your database
 config :app_name, AppName.Repo,
-  url: System.fetch_env!("DATABASE_URL"),
+  username: "postgres",
+  password: "postgres",
+  hostname: System.get_env("DATABASE_HOSTNAME") || "localhost",
+  database: "app_name_dev",
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -15,9 +19,8 @@ config :app_name, AppName.Repo,
 config :app_name, AppNameWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {0, 0, 0, 0}, port: System.fetch_env!("HTTP_PORT")],
-  url: [host: System.fetch_env!("PHX_URL_HOST")],
-  secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
+  http: [ip: {0, 0, 0, 0}, port: 4000],
+  secret_key_base: "+u/EnbKGgUIcJzHUeQbGI8miH83PMhE6sm1sVQQPfk0iVOar5HFHlG8H4l2jL9fZ",
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -57,8 +60,7 @@ config :app_name, AppNameWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/app_name_web/(live|views)/.*(ex)$",
-      ~r"lib/app_name_web/templates/.*(eex)$"
+      ~r"lib/app_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
@@ -71,3 +73,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
