@@ -9,7 +9,7 @@ This boilerplate comes with batteries included, you’ll find:
 - CORS management with [CorsPlug](https://github.com/mschae/cors_plug)
 - Static code analysis with [Credo](https://github.com/rrrene/credo)
 - Releases using [`mix release`](https://hexdocs.pm/mix/Mix.Tasks.Release.html) and [Docker](https://www.docker.com)
-- [Tailwindcss](https://tailwindcss.com/) & [daisyUI](https://daisyui.com/)
+- [Tailwindcss](https://tailwindcss.com/)
 
 ## Configurations
 
