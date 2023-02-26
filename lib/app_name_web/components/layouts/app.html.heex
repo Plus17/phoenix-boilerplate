@@ -15,23 +15,24 @@
     </div>
     <div class="flex items-center gap-4">
       <a
-        href="https://twitter.com/elixirphoenix"
+        href={~p"/users/settings"}
         class="text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
       >
-        @elixirphoenix
+        Settings
       </a>
       <a
-        href="https://github.com/phoenixframework/phoenix"
+        href={~p"/users/settings/two_factor_auth/new"}
         class="text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
       >
-        GitHub
+        2 factor
       </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:bg-zinc-200/80 active:text-zinc-900/70"
+      <.link
+        href={~p"/users/log_out"}
+        class="text-[0.8125rem] font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        method="delete"
       >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
+        Log out
+      </.link>
     </div>
   </div>
 </header>
