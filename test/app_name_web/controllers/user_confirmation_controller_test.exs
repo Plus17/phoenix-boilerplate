@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserConfirmationControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  alias AppName.Contexts.Accounts
+  alias AppName.Accounts
   alias AppName.Repo
 
   setup do
@@ -24,8 +24,11 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
           "user" => %{"email" => user.email}
         })
 
-      assert redirected_to(conn) == "/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "If your email is in our system"
+
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
     end
 
@@ -37,8 +40,11 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
           "user" => %{"email" => user.email}
         })
 
-      assert redirected_to(conn) == "/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "If your email is in our system"
+
       refute Repo.get_by(Accounts.UserToken, user_id: user.id)
     end
 
@@ -48,8 +54,11 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
           "user" => %{"email" => "unknown@example.com"}
         })
 
-      assert redirected_to(conn) == "/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "If your email is in our system"
+      assert redirected_to(conn) == ~p"/"
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "If your email is in our system"
+
       assert Repo.all(Accounts.UserToken) == []
     end
   end
@@ -65,7 +74,7 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
     end
   end
 
-  describe "PUT /users/confirm/:token" do
+  describe "POST /users/confirm/:token" do
     test "confirms the given token once", %{conn: conn, user: user} do
       token =
         extract_user_token(fn url ->
@@ -101,7 +110,7 @@ defmodule AppNameWeb.UserConfirmationControllerTest do
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
       conn = post(conn, ~p"/users/confirm/oops")
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == ~p"/"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
                "User confirmation link is invalid or it has expired"

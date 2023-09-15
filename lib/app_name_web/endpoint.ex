@@ -7,7 +7,7 @@ defmodule AppNameWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_app_name_key",
-    signing_salt: "LRu4ckaF",
+    signing_salt: "rQ0i0QKh",
     same_site: "Lax"
   ]
 
@@ -47,6 +47,5 @@ defmodule AppNameWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug CORSPlug
   plug AppNameWeb.Router
 end

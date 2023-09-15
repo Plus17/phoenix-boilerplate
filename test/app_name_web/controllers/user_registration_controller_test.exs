@@ -6,13 +6,14 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
       conn = get(conn, ~p"/users/register")
       response = html_response(conn, 200)
       assert response =~ "Register"
-      assert response =~ "Log in</a>"
-      assert response =~ "Register</a>"
+      assert response =~ ~p"/users/log_in"
+      assert response =~ ~p"/users/register"
     end
 
     test "redirects if already logged in", %{conn: conn} do
       conn = conn |> log_in_user(insert(:user)) |> get(~p"/users/register")
-      assert redirected_to(conn) == "/"
+
+      assert redirected_to(conn) == ~p"/"
     end
   end
 
@@ -27,14 +28,14 @@ defmodule AppNameWeb.UserRegistrationControllerTest do
         })
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == ~p"/"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
+      conn = get(conn, ~p"/")
       response = html_response(conn, 200)
       assert response =~ email
-      assert response =~ "Settings</a>"
-      assert response =~ "Log out</a>"
+      assert response =~ ~p"/users/settings"
+      assert response =~ ~p"/users/log_out"
     end
 
     test "render errors for invalid data", %{conn: conn} do

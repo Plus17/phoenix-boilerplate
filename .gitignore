@@ -24,6 +24,7 @@ erl_crash.dump
 app_name-*.tar
 
 # The directory NPM downloads your dependencies sources to.
+npm-debug.log
 /assets/node_modules/
 
 # If NPM crashes, it generates a log, let's ignore it too.

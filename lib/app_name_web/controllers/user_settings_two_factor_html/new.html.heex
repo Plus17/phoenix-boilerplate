@@ -19,13 +19,11 @@
     <div class="form-control w-full max-w-xs text-center py-10">
       <.simple_form
         :let={f}
-        for={:user}
+        for={@conn.params["user"]}
+        as={:user}
         action={~p"/users/settings/two_factor_auth"}
-        method="POST"
-        id="setup_totp"
       >
-        <.input field={{f, :otp}} type="text" label="otp" required />
-
+        <.input field={f[:otp]} type="text" label="otp" required />
         <:actions>
           <.button phx-disable-with="Sigining in..." class="w-full">
             Verify code <span aria-hidden="true">→</span>

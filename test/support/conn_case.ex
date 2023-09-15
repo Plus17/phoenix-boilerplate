@@ -19,24 +19,21 @@ defmodule AppNameWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint AppNameWeb.Endpoint
+
+      use AppNameWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import AppName.Factory
       import AppNameWeb.ConnCase
-
-      alias AppNameWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint AppNameWeb.Endpoint
-
-      use AppNameWeb, :verified_routes
     end
   end
 
   setup tags do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(AppName.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    AppName.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
@@ -59,7 +56,7 @@ defmodule AppNameWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = AppName.Contexts.Accounts.generate_user_session_token(user)
+    token = AppName.Accounts.generate_user_session_token(user)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})

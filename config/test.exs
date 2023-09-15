@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
@@ -17,7 +20,7 @@ config :app_name, AppName.Repo,
 # you can enable the server option below.
 config :app_name, AppNameWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "fMSYUR0BJ9fswwU6JvUr1flW6B8hkjMI465WXJLQlKr/9kCiAzmpTHjrVEEk4vLv",
+  secret_key_base: "LugJPyorOSko4Ju9+VInk5jyfsXTEdlNb9rp3z4iieBG98AUobP2xEnAyA94PEfB",
   server: false
 
 # In test we don't send emails.
@@ -27,12 +30,7 @@ config :app_name, AppName.Mailer, adapter: Swoosh.Adapters.Test
 config :swoosh, :api_client, false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
-
-# Only in tests, remove the complexity from the password hashing algorithm
-config :argon2_elixir,
-  t_cost: 1,
-  m_cost: 8

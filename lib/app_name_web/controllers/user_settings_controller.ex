@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserSettingsController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Accounts
+  alias AppName.Accounts
   alias AppNameWeb.UserAuth
 
   plug :assign_email_and_password_changesets
@@ -16,7 +16,7 @@ defmodule AppNameWeb.UserSettingsController do
 
     case Accounts.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
-        Accounts.deliver_update_email_instructions(
+        Accounts.deliver_user_update_email_instructions(
           applied_user,
           user.email,
           &url(~p"/users/settings/confirm_email/#{&1}")

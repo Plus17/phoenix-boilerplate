@@ -11,11 +11,18 @@
   </p>
 </div>
 
-<.simple_form :let={f} for={:user} action={~p"/users/totp"} as={:user} method="POST" id="user_otp">
-  <.input field={{f, :code}} type="text" label="code" required />
+<.simple_form
+  :let={f}
+  for={@conn.params["user"]}
+  as={:user}
+  action={~p"/users/settings/two_factor_auth"}
+  method="POST"
+  id="user_otp"
+>
+  <.input field={f[:code]} type="text" label="code" required />
 
   <:actions :let={f}>
-    <.input field={{f, :remember_me}} type="checkbox" label="Keep me logged in" />
+    <.input field={f[:remember_me]} type="checkbox" label="Keep me logged in" />
   </:actions>
   <:actions>
     <.button phx-disable-with="Sigining in..." class="w-full">

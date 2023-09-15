@@ -1,8 +1,7 @@
 defmodule AppNameWeb.UserSessionController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Accounts
-
+  alias AppName.Accounts
   alias AppNameWeb.UserAuth
 
   def new(conn, _params) do
@@ -20,7 +19,7 @@ defmodule AppNameWeb.UserSessionController do
 
         conn
         |> put_session(:user_totp_pending, true)
-        |> redirect(to: url(~p"/users/totp?user=#{[user: totp_params]}"))
+        |> redirect(to: ~p"/users/totp", params: totp_params)
       else
         UserAuth.redirect_user_after_login_with_remember_me(conn, user_params)
       end

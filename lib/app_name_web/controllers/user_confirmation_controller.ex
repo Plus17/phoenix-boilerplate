@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserConfirmationController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Accounts
+  alias AppName.Accounts
 
   def new(conn, _params) do
     render(conn, :new)

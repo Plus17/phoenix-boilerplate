@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserSettingsTwoFactorController do
   use AppNameWeb, :controller
 
-  alias AppName.Handlers.Users.TwoFactorHander
+  alias AppName.Contexts.Accounts.TwoFactorSetup
 
   def new(conn, _params) do
     secret = NimbleTOTP.secret()
@@ -19,7 +19,7 @@ defmodule AppNameWeb.UserSettingsTwoFactorController do
   def create(conn, %{"user" => %{"otp" => otp}}) do
     secret = get_session(conn, :totp_secret)
 
-    case TwoFactorHander.setup(conn.assigns.current_user, secret, otp) do
+    case TwoFactorSetup.setup(conn.assigns.current_user, secret, otp) do
       {:ok, :success} ->
         conn
         |> delete_session(:totp_secret)
@@ -35,7 +35,7 @@ defmodule AppNameWeb.UserSettingsTwoFactorController do
   end
 
   def delete(conn, _params) do
-    case TwoFactorHander.deactivate(conn.assigns.current_user) do
+    case TwoFactorSetup.deactivate(conn.assigns.current_user) do
       {:ok, _user} ->
         conn
         |> delete_session(:totp_secret)

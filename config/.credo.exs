@@ -31,17 +31,28 @@
           "apps/*/test/",
           "apps/*/web/"
         ],
+        # Exclude framework and generated files
         excluded: [
           ~r"/_build/",
           ~r"/deps/",
           ~r"/node_modules/",
           ~r"/test/support/",
           ~r"/lib/app_name_web/",
+          ~r"/lib/app_name/factories/",
+          "lib/app_name/accounts.ex",
+          "lib/app_name/application.ex",
+          "lib/tasks/ci.ex",
+          "lib/factory.ex",
           "lib/app_name_web.ex",
           "lib/app_name_web/telemetry.ex",
           "lib/app_name/release.ex",
           "lib/app_name/protocol_implementations.ex",
-          "lib/mix/tasks/gen.manager.ex"
+          "lib/mix/tasks/gen.manager.ex",
+          "test/app_name_web/user_auth_test.exs",
+          "lib/app_name/accounts/user.ex",
+          "lib/app_name/mailer.ex",
+          "lib/app_name/accounts/user_token.ex",
+          "test/app_name/accounts_test.exs"
         ]
       },
       #
@@ -114,7 +125,7 @@
            files: %{
              excluded: [
                "lib/app_name_web/controllers/user_auth.ex",
-               "lib/app_name/contexts/accounts/user_notifier.ex"
+               "lib/app_name/accounts/user_notifier.ex"
              ]
            }
          ]},
@@ -181,7 +192,7 @@
          [
            files: %{
              excluded: [
-               "lib/app_name/contexts/accounts.ex",
+               "lib/app_name/accounts.ex",
                "lib/release.ex"
              ]
            }
@@ -200,10 +211,10 @@
                ~r"/lib/app_name_web/views/",
                ~r"/lib/app_name_web/controllers/",
                ~r"/test/factories",
-               "lib/app_name/contexts/accounts/user.ex",
-               "lib/app_name/contexts/accounts/user_notifier.ex",
-               "lib/app_name/contexts/accounts.ex",
-               "lib/app_name/contexts/accounts/user_token.ex",
+               "lib/app_name/accounts/user.ex",
+               "lib/app_name/accounts/user_notifier.ex",
+               "lib/app_name/accounts.ex",
+               "lib/app_name/accounts/user_token.ex",
                "lib/release.ex"
              ]
            }
@@ -240,7 +251,7 @@
            files: %{
              excluded: [
                # exclude mix phx.gen.auth generated files
-               "test/app_name/contexts/accounts_test.exs",
+               "test/app_name/accounts_test.exs",
                "test/app_name_web/controllers/user_settings_controller_test.exs",
                "test/app_name_web/controllers/user_session_controller_test.exs",
                "test/app_name_web/controllers/user_registration_controller_test.exs",

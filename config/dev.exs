@@ -19,7 +19,7 @@ config :app_name, AppName.Repo,
 config :app_name, AppNameWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {0, 0, 0, 0}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   secret_key_base: "+u/EnbKGgUIcJzHUeQbGI8miH83PMhE6sm1sVQQPfk0iVOar5HFHlG8H4l2jL9fZ",
   check_origin: false,
   code_reloader: true,

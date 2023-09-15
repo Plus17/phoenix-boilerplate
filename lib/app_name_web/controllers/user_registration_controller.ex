@@ -1,8 +1,8 @@
 defmodule AppNameWeb.UserRegistrationController do
   use AppNameWeb, :controller
 
-  alias AppName.Contexts.Accounts
-  alias AppName.Contexts.Accounts.User
+  alias AppName.Accounts
+  alias AppName.Accounts.User
   alias AppNameWeb.UserAuth
 
   def new(conn, _params) do

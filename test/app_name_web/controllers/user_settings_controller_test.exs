@@ -1,7 +1,7 @@
 defmodule AppNameWeb.UserSettingsControllerTest do
   use AppNameWeb.ConnCase, async: true
 
-  alias AppName.Contexts.Accounts
+  alias AppName.Accounts
 
   setup :register_and_log_in_user
 
@@ -21,7 +21,7 @@ defmodule AppNameWeb.UserSettingsControllerTest do
 
   describe "PUT /users/settings (change password form)" do
     test "updates the user password and resets tokens", %{conn: conn, user: user} do
-      updated_password_conn =
+      new_password_conn =
         put(conn, ~p"/users/settings", %{
           "action" => "update_password",
           "current_password" => valid_user_password(),
@@ -31,11 +31,12 @@ defmodule AppNameWeb.UserSettingsControllerTest do
           }
         })
 
-      assert redirected_to(updated_password_conn) == ~p"/users/settings"
-      assert get_session(updated_password_conn, :user_token) != get_session(conn, :user_token)
+      assert redirected_to(new_password_conn) == ~p"/users/settings"
 
-      assert Phoenix.Flash.get(updated_password_conn.assigns.flash, :info) ==
-               "Password updated successfully."
+      assert get_session(new_password_conn, :user_token) != get_session(conn, :user_token)
+
+      assert Phoenix.Flash.get(new_password_conn.assigns.flash, :info) =~
+               "Password updated successfully"
 
       assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
     end
@@ -73,8 +74,8 @@ defmodule AppNameWeb.UserSettingsControllerTest do
 
       assert redirected_to(conn) == ~p"/users/settings"
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) ==
-               "A link to confirm your email change has been sent to the new address."
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "A link to confirm your email"
 
       assert Accounts.get_user_by_email(user.email)
     end
@@ -100,7 +101,7 @@ defmodule AppNameWeb.UserSettingsControllerTest do
 
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_update_email_instructions(%{user | email: email}, user.email, url)
+          Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 
       %{token: token, email: email}
@@ -109,23 +110,27 @@ defmodule AppNameWeb.UserSettingsControllerTest do
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
       conn = get(conn, ~p"/users/settings/confirm_email/#{token}")
       assert redirected_to(conn) == ~p"/users/settings"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Email changed successfully."
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+               "Email changed successfully"
+
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 
       conn = get(conn, ~p"/users/settings/confirm_email/#{token}")
+
       assert redirected_to(conn) == ~p"/users/settings"
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               "Email change link is invalid or it has expired."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+               "Email change link is invalid or it has expired"
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
       conn = get(conn, ~p"/users/settings/confirm_email/oops")
       assert redirected_to(conn) == ~p"/users/settings"
 
-      assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               "Email change link is invalid or it has expired."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+               "Email change link is invalid or it has expired"
 
       assert Accounts.get_user_by_email(user.email)
     end
