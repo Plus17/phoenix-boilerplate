@@ -27,15 +27,15 @@ jobs:
       # Specify the OTP and Elixir versions to use when building
       # and running the workflow steps.
       matrix:
-        elixir: ['1.14']    # Define the elixir version [required]
-        otp: ['24']     # Define the OTP version [required]
+        elixir: ['1.18.1']    # Define the elixir version [required]
+        otp: ['27.2']     # Define the OTP version [required]
     runs-on: ubuntu-latest
     # Set up a Postgres DB service. By default, Phoenix applications
     # use Postgres. This creates a database for running tests.
     # Additional services can be defined here if required.
     services:
       postgres:
-        image: postgres:12
+        image: postgres:16
         ports: ['5432:5432']
         env:
           POSTGRES_USER: postgres
@@ -95,4 +95,4 @@ jobs:
     # Runs credo in strict mode
     # Execute the tests.
     - name: Run ci verifications
-      run: mix CI
+      run: mix ci

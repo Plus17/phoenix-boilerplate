@@ -42,8 +42,9 @@ defmodule AppNameWeb do
         formats: [:html, :json],
         layouts: [html: AppNameWeb.Layouts]
 
+      use Gettext, backend: AppNameWeb.Gettext
+
       import Plug.Conn
-      import AppNameWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -81,11 +82,13 @@ defmodule AppNameWeb do
 
   defp html_helpers do
     quote do
+      # Translation
+      use Gettext, backend: AppNameWeb.Gettext
+
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components and translation
+      # Core UI components
       import AppNameWeb.CoreComponents
-      import AppNameWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
@@ -105,7 +108,7 @@ defmodule AppNameWeb do
   end
 
   @doc """
-  When used, dispatch to the appropriate controller/view/etc.
+  When used, dispatch to the appropriate controller/live_view/etc.
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])

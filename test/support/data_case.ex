@@ -23,7 +23,6 @@ defmodule AppName.DataCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import AppName.Factory
       import AppName.DataCase
     end
   end
@@ -55,11 +54,5 @@ defmodule AppName.DataCase do
         opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
       end)
     end)
-  end
-
-  def extract_user_token(fun) do
-    {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
-    [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
-    token
   end
 end

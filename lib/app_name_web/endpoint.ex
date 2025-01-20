@@ -7,11 +7,13 @@ defmodule AppNameWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_app_name_key",
-    signing_salt: "rQ0i0QKh",
+    signing_salt: "cG8evzG8",
     same_site: "Lax"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #

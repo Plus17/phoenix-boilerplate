@@ -1,29 +1,33 @@
-version: '3.7'
-
-volumes:
-  deps:
-  builds:
-  node_modules:
-
 services:
   phx:
-    image: plus17/phoenix-alpine:1.14.3-1.7.0-24.0.2-3.15.0
-    ports:
-      - ${HTTP_PORT:-4000}:${HTTP_PORT:-4000}
-    volumes:
-      - ./:/app/src
-      - deps:/app/src/deps
-      - builds:/app/src/_build
-      - node_modules:/app/src/assets/node_modules
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
     depends_on:
       - postgres
+    ports:
+      - "${PHX_PORT:-4000}:4000"
+    volumes:
+      - ./:/app
+      - deps:/app/deps
+      - build:/app/_build
+    environment:
+      - DB_HOSTNAME=postgres
     env_file:
       - .env
-    working_dir: /app/src
+    working_dir: /app
 
   postgres:
-    image: postgres:12
+    image: postgres:16
     ports:
-      - ${DATABASE_EXTERNAL_PORT:-5432}:5432
+      - "${POSTGRES_PORT:-5432}:5432"
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  build:
+  deps:
+  db:

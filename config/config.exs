@@ -7,19 +7,26 @@
 # General application configuration
 import Config
 
+config :app_name, Oban,
+  engine: Oban.Engines.Basic,
+  notifier: Oban.Notifiers.Postgres,
+  queues: [default: 10],
+  repo: AppName.Repo
+
 config :app_name,
   ecto_repos: [AppName.Repo],
-  generators: [binary_id: true]
+  generators: [timestamp_type: :utc_datetime_usec]
 
 # Configures the endpoint
 config :app_name, AppNameWeb.Endpoint,
   url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: AppNameWeb.ErrorHTML, json: AppNameWeb.ErrorJSON],
     layout: false
   ],
   pubsub_server: AppName.PubSub,
-  live_view: [signing_salt: "ePqBlGTf"]
+  live_view: [signing_salt: "ptc24Bof"]
 
 # Configures the mailer
 #
@@ -30,13 +37,10 @@ config :app_name, AppNameWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :app_name, AppName.Mailer, adapter: Swoosh.Adapters.Local
 
-# Swoosh API client is needed for adapters other than SMTP.
-config :swoosh, :api_client, false
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
-  default: [
+  app_name: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
@@ -45,8 +49,8 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "3.3.2",
-  default: [
+  version: "3.4.3",
+  app_name: [
     args: ~w(
       --config=tailwind.config.js
       --input=css/app.css

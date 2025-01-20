@@ -10,16 +10,22 @@ defmodule AppName.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      elixirc_options: [warnings_as_errors: true],
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        test: :test,
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
+      test_coverage: [
+        summary: [threshold: 85],
+        ignore_modules: [
+          AppName.Repo,
+          AppName.Release,
+          AppName.DataCase,
+          AppNameWeb.Layouts,
+          AppNameWeb.PageHTML,
+          AppNameWeb.CoreComponents
+        ]
       ]
     ]
+  end
+
+  def cli do
+    [preferred_envs: [ci: :test]]
   end
 
   # Configuration for the OTP application.
@@ -41,36 +47,39 @@ defmodule AppName.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 3.0"},
-      {:phoenix, "~> 1.7.7"},
-      {:phoenix_ecto, "~> 4.4"},
+      {:phoenix, "~> 1.7.18"},
+      {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 3.3"},
+      {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.19.0"},
+      {:phoenix_live_view, "~> 1.0.0"},
       {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_dashboard, "~> 0.8.0"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:swoosh, "~> 1.3"},
+      {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.1",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+      {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
-      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.20"},
+      {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
+      {:dns_cluster, "~> 0.1.1"},
+      {:bandit, "~> 1.5"},
 
       # Code quality
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.14", only: :test},
 
-      # Testing
-      {:ex_machina, "~> 2.7.0", only: [:dev, :test]},
-
-      # Auth
-      {:nimble_totp, "~> 0.1.0"},
-      {:eqrcode, "~> 0.1.10"}
+      # Background jobs
+      {:igniter, "~> 0.5"},
+      {:oban, "~> 2.18"}
     ]
   end
 
@@ -82,13 +91,30 @@ defmodule AppName.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      copy_env_file: &copy_env_file/1,
+      setup: ["copy_env_file", "deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test --warnings-as-errors"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.build": ["tailwind app_name", "esbuild app_name"],
+      "assets.deploy": [
+        "tailwind app_name --minify",
+        "esbuild app_name --minify",
+        "phx.digest"
+      ],
+      ci: [
+        "hex.audit",
+        "deps.unlock --check-unused",
+        "format --check-formatted",
+        "credo --strict",
+        "compile --warnings-as-errors",
+        "test --warnings-as-errors --cover"
+      ]
     ]
+  end
+
+  defp copy_env_file(_) do
+    Mix.shell().cmd("if [ ! -f .env ]; then cp .env.dist .env; fi")
   end
 end

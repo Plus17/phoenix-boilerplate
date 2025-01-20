@@ -27,7 +27,6 @@ defmodule AppNameWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import AppName.Factory
       import AppNameWeb.ConnCase
     end
   end
@@ -35,37 +34,5 @@ defmodule AppNameWeb.ConnCase do
   setup tags do
     AppName.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
-  end
-
-  @doc """
-  Setup helper that registers and logs in users.
-
-      setup :register_and_log_in_user
-
-  It stores an updated connection and a registered user in the
-  test context.
-  """
-  def register_and_log_in_user(%{conn: conn}) do
-    user = AppName.Factory.insert(:user)
-    %{conn: log_in_user(conn, user), user: user}
-  end
-
-  @doc """
-  Logs the given `user` into the `conn`.
-
-  It returns an updated `conn`.
-  """
-  def log_in_user(conn, user) do
-    token = AppName.Accounts.generate_user_session_token(user)
-
-    conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:user_token, token)
-  end
-
-  def extract_user_token(fun) do
-    {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
-    [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
-    token
   end
 end
